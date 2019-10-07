@@ -21,6 +21,5 @@ export class EngineComponent implements OnInit {
     this.engServ.onDocumentMouseWheel(event);
   }
   onMouseMove( event ): void{
-    this.engServ.onDocumentMouseMove(event);
   }
 }

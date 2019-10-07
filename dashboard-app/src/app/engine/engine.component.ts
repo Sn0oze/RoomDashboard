@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EngineService } from './engine.service';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-engine',
@@ -16,5 +17,10 @@ export class EngineComponent implements OnInit {
     this.engServ.createScene(this.rendererCanvas);
     this.engServ.animate();
   }
-
+  onMousewheel( event ): void {
+    this.engServ.onDocumentMouseWheel(event);
+  }
+  onMouseMove( event ): void{
+    this.engServ.onDocumentMouseMove(event);
+  }
 }

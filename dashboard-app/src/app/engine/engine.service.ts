@@ -13,6 +13,12 @@ export class EngineService implements OnDestroy {
   private light: THREE.PointLight;
 
   private frameId: number = null;
+  private radius: number;
+  private theta: number;
+  private onMouseDownTheta: number;
+  private onMouseDownPhi: number;
+  private phi: number;
+  private onMouseDownPosition: THREE.Vector2;
 
   public constructor(private ngZone: NgZone) {
   }
@@ -60,6 +66,13 @@ export class EngineService implements OnDestroy {
     plane.rotateZ(45);
     this.scene.add( plane );
     */
+
+    this.radius = 25;
+    this.theta = 0;
+    this.onMouseDownTheta = 0;
+    this.phi = 0;
+    this.onMouseDownPhi = 0;
+    this.onMouseDownPosition = new THREE.Vector2();
 
     const mainBuilding = this.createBuilding(11);
     this.scene.add(mainBuilding);
@@ -124,5 +137,22 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
+  }
+
+  onDocumentMouseWheel( event ): void  {
+    const movement = event.wheelDeltaY / 50;
+
+    if ( (this.radius - movement <= 20) || (this.radius - movement >= 60) ) {
+      return;
+    }
+
+    this.radius -= movement;
+
+    this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 );
+    this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 );
+    this.camera.position.z = this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 );
+    this.camera.updateMatrix();
+
+    this.render();
   }
 }

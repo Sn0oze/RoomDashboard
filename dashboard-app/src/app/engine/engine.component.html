@@ -1,3 +1,9 @@
 <div class="engine-wrapper">
-  <canvas #rendererCanvas id="renderCanvas" (mousewheel)="onMousewheel($event)" (mousemove)="onMouseMove($event)"></canvas>
+  <canvas
+      #rendererCanvas
+      id="renderCanvas"
+      (mousewheel)="onMousewheel($event)"
+      (mousemove)="onMouseMove($event)"
+      (click)="onClick($event)">
+  </canvas>
 </div>

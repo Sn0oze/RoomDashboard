@@ -1,2 +1,3 @@
-export interface RoomData.Model {
+export interface RoomData {
+  name: string;
 }

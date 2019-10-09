@@ -19,6 +19,7 @@ export class EngineService implements OnDestroy {
   private onMouseDownPhi: number;
   private phi: number;
   private onMouseDownPosition: THREE.Vector2;
+  private raycaster: THREE.Raycaster;
 
   public constructor(private ngZone: NgZone) {
   }
@@ -73,6 +74,7 @@ export class EngineService implements OnDestroy {
     this.phi = 0;
     this.onMouseDownPhi = 0;
     this.onMouseDownPosition = new THREE.Vector2();
+    this.raycaster = new THREE.Raycaster();
 
     const mainBuilding = this.createBuilding(11);
     this.scene.add(mainBuilding);
@@ -139,7 +141,7 @@ export class EngineService implements OnDestroy {
     this.renderer.setSize(width, height);
   }
 
-  onDocumentMouseWheel( event ): void  {
+  onMouseWheel( event ): void  {
     const movement = event.wheelDeltaY / 50;
 
     if ( (this.radius - movement <= 20) || (this.radius - movement >= 60) ) {
@@ -152,7 +154,18 @@ export class EngineService implements OnDestroy {
     this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 );
     this.camera.position.z = this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 );
     this.camera.updateMatrix();
+  }
 
-    this.render();
+  onClick(event): void {
+    this.onMouseDownPosition.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+    this.onMouseDownPosition.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+
+    this.raycaster.setFromCamera( this.onMouseDownPosition, this.camera );
+
+    const intersects = this.raycaster.intersectObjects( this.scene.children, true );
+    console.log(intersects);
+    const block = intersects[0].object as THREE.Mesh;
+    const material = block.material as THREE.MeshBasicMaterial;
+    material.color.setHex( 0xccccc );
   }
 }

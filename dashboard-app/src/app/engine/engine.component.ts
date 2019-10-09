@@ -17,9 +17,13 @@ export class EngineComponent implements OnInit {
     this.engServ.createScene(this.rendererCanvas);
     this.engServ.animate();
   }
-  onMousewheel( event ): void {
-    this.engServ.onDocumentMouseWheel(event);
+  onMousewheel(event): void {
+    this.engServ.onMouseWheel(event);
   }
-  onMouseMove( event ): void{
+  onMouseMove(event): void {
+  }
+
+  onClick(event): void {
+    this.engServ.onClick(event);
   }
 }

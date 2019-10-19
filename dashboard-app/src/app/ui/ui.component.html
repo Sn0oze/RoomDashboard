@@ -1,6 +1,20 @@
 <div class="ui-wrapper">
-  <app-ui-infobar-top></app-ui-infobar-top>
-  <app-ui-sidebar-left></app-ui-sidebar-left>
-  <app-ui-sidebar-right></app-ui-sidebar-right>
-  <app-ui-infobar-bottom></app-ui-infobar-bottom>
+  <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
+  <ng-template #floorSelected>
+    <p>Has floor</p>
+    <mat-form-field>
+      <mat-label>Select a Room</mat-label>
+      <mat-select [(value)]="room">
+        <mat-option *ngFor="let room of rooms" [value]="room">{{room}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <ng-container *ngFor="let job of floor[room]">
+        <span style="margin-right: 5px">{{job['tradesmen']}}</span>
+      </ng-container>
+    </div>
+  </ng-template>
+  <ng-template #noFloor>
+    <p>Has no floor</p>
+  </ng-template>
 </div>

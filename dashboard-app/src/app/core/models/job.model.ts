@@ -1,2 +1,4 @@
-export interface Job.Model {
+export interface Job {
+  tradesmen: string;
+  deadline: string;
 }

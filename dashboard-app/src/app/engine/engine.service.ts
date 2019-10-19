@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 import {ElementRef, Injectable, NgZone, OnDestroy} from '@angular/core';
+import {Colors} from '../core/constants/colors';
+import {FloorUserData} from '../core/models/floor-user-data.model';
+import {BehaviorSubject} from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +13,6 @@ export class EngineService implements OnDestroy {
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
-  private ambient: THREE.AmbientLight;
   private light: THREE.PointLight;
 
   private frameId: number = null;
@@ -20,6 +23,9 @@ export class EngineService implements OnDestroy {
   private phi: number;
   private onMouseDownPosition: THREE.Vector2;
   private raycaster: THREE.Raycaster;
+  private INTERSECTED = null;
+
+  floorClicked: BehaviorSubject<string> = new BehaviorSubject('');
 
   public constructor(private ngZone: NgZone) {
   }
@@ -32,6 +38,7 @@ export class EngineService implements OnDestroy {
 
   createScene(canvas: ElementRef<HTMLCanvasElement>): void {
     // The first step is to get the reference of the canvas element from our HTML document
+    const initialCameraDistance = 50;
     this.canvas = canvas.nativeElement;
 
     this.renderer = new THREE.WebGLRenderer({
@@ -47,28 +54,15 @@ export class EngineService implements OnDestroy {
     this.camera = new THREE.PerspectiveCamera(
       75, window.innerWidth / window.innerHeight, 0.1, 1000
     );
-    this.camera.position.z = 25;
+    this.camera.position.z = initialCameraDistance;
     this.scene.add(this.camera);
 
-    // soft white light
-    this.ambient = new THREE.AmbientLight(0x404040);
-    this.ambient.position.z = 10;
-
     this.light = new THREE.PointLight(0xffffff);
-    this.light.position.set(20, 50, 10);
-    this.scene.add(this.ambient);
-    this.scene.add(this.light);
-    // this.cube.cursor = 'pointer';
-    // cube.on('click', function(ev) {});
-    /*
-    const geometry = new THREE.PlaneGeometry( 30, 30, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( geometry, material );
-    plane.rotateZ(45);
-    this.scene.add( plane );
-    */
+    this.light.position.set(0, 100, 0);
 
-    this.radius = 25;
+    this.scene.add(this.light);
+
+    this.radius = initialCameraDistance;
     this.theta = 0;
     this.onMouseDownTheta = 0;
     this.phi = 0;
@@ -76,37 +70,36 @@ export class EngineService implements OnDestroy {
     this.onMouseDownPosition = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
-    const mainBuilding = this.createBuilding(11);
+    const mainBuilding = this.createBuilding(10);
     this.scene.add(mainBuilding);
-    const sideBuilding = this.createBuilding(5);
-    sideBuilding.translateX(6);
-    this.scene.add(sideBuilding);
-    const sideBuilding2 = this.createBuilding(15);
-    sideBuilding2.translateX(-5);
-    sideBuilding2.translateZ(0);
-    sideBuilding2.translateY(-5);
-    this.scene.add(sideBuilding2);
   }
 
   addFloor(color = 0x000000): THREE.Mesh {
-    const dimensions = {width: 3, height: 1, depth: 3};
-    const geometry = new THREE.BoxGeometry(dimensions.width, dimensions.height, dimensions.depth);
+    const dimensions = {width: 7, height: 1, depth: 14};
+    const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
     const material = new THREE.MeshBasicMaterial({color: color});
+    // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
     const cube = new THREE.Mesh(geometry, material);
     cube.rotation.x = Math.PI / 4;
     cube.rotation.y = Math.PI / 4;
+    cube.castShadow = true;
     return cube;
   }
 
   createBuilding(floors = 1): THREE.Group {
     const building = new THREE.Group();
     for (let i = 0; i < floors; i++) {
-      const color = i % 2 === 0 ? 0x000000 : 0x394a6d;
+      const color = i % 2 === 0 ? 0x000000 : Colors.default;
       const floor = this.addFloor(color);
-      floor.translateY(i);
+      floor.userData.floor = this.formatFloorId(i);
+      floor.translateY(i * 1.5);
       building.add(floor);
     }
     return building;
+  }
+
+  formatFloorId(floorNumber: number): string {
+    return `floor_${floorNumber}`;
   }
 
   animate(): void {
@@ -156,16 +149,45 @@ export class EngineService implements OnDestroy {
     this.camera.updateMatrix();
   }
 
+  onMouseMove(event): void {
+    const intersects = this.getIntersection(event);
+    const block = intersects[0].object as THREE.Mesh;
+    const material = block.material as THREE.MeshBasicMaterial;
+    material.color.setHex( Colors.hover );
+  }
+
   onClick(event): void {
+    const intersects = this.getIntersection(event);
+    if (intersects.length) {
+      // Cast to any required because the the type of the intersect objects is forced to object3D
+      // which does not have an material and color property.
+      // const block = intersects[0] as any;
+      // block.object.material.color.setHex(Colors.active);
+      if ( this.INTERSECTED !== intersects[ 0 ].object ) {
+        if ( this.INTERSECTED ) {
+          this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
+        }
+        this.INTERSECTED = intersects[ 0 ].object;
+        this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
+        this.INTERSECTED.material.color.setHex( Colors.active );
+        const floorData = this.INTERSECTED.userData as FloorUserData;
+        this.floorClicked.next(floorData.floor);
+      }
+    } else {
+      if ( this.INTERSECTED ) {
+        this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
+        this.floorClicked.next('');
+
+      }
+      this.INTERSECTED = null;
+    }
+  }
+
+  getIntersection(event): THREE.Intersection[] {
     this.onMouseDownPosition.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
     this.onMouseDownPosition.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
     this.raycaster.setFromCamera( this.onMouseDownPosition, this.camera );
-
-    const intersects = this.raycaster.intersectObjects( this.scene.children, true );
-    console.log(intersects);
-    const block = intersects[0].object as THREE.Mesh;
-    const material = block.material as THREE.MeshBasicMaterial;
-    material.color.setHex( 0xccccc );
+    return this.raycaster.intersectObjects( this.scene.children, true );
   }
 }

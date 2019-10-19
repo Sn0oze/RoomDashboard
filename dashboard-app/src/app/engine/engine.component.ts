@@ -1,29 +1,40 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnInit, OnDestroy, ViewChild, Output, EventEmitter} from '@angular/core';
 import { EngineService } from './engine.service';
-import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-engine',
   templateUrl: './engine.component.html'
 })
-export class EngineComponent implements OnInit {
+export class EngineComponent implements OnInit, OnDestroy {
 
-  @ViewChild('rendererCanvas', { static: true })
-  public rendererCanvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild('rendererCanvas', { static: true }) rendererCanvas: ElementRef<HTMLCanvasElement>;
+  @Output() floorSelected = new EventEmitter<string>();
 
-  constructor(private engServ: EngineService) { }
+
+  constructor(
+    private engine: EngineService) { }
 
   ngOnInit() {
-    this.engServ.createScene(this.rendererCanvas);
-    this.engServ.animate();
+    this.engine.createScene(this.rendererCanvas);
+    this.engine.animate();
+    this.engine.floorClicked.subscribe(
+      floor => {
+         this.floorSelected.emit(floor);
+      });
   }
+
+  ngOnDestroy(): void {
+    this.engine.floorClicked.unsubscribe();
+  }
+
   onMousewheel(event): void {
-    this.engServ.onMouseWheel(event);
+    this.engine.onMouseWheel(event);
   }
   onMouseMove(event): void {
+    // this.engine.onMouseMove(event);
   }
 
   onClick(event): void {
-    this.engServ.onClick(event);
+    this.engine.onClick(event);
   }
 }

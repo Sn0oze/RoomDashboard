@@ -1,0 +1,2 @@
+export interface FloorUserData {
+}

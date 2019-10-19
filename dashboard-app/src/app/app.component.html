@@ -1,2 +1,3 @@
-<app-engine></app-engine>
-<app-ui></app-ui>
+<app-ui [floor]="floor"></app-ui>
+<app-engine (floorSelected)="onFloorSelected($event)"></app-engine>
+

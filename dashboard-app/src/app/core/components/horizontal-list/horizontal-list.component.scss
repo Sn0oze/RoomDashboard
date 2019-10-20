@@ -1,9 +1,5 @@
 .horizontal-list{
   display: flex;
   flex-flow: row wrap;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  & .stack-pill:first-of-type {
-    padding-left: 0;
-  }
+  justify-content: flex-start;
 }

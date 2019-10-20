@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import buildingData from '../data/buildingData.json';
+import { Colors } from './core/constants/colors';
 
 
 @Component({
@@ -8,7 +9,6 @@ import buildingData from '../data/buildingData.json';
   styleUrls: []
 })
 export class AppComponent implements OnInit {
-  title = 'Dashboard';
   floor = null;
 
   ngOnInit(): void {

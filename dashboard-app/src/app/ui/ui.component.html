@@ -10,8 +10,12 @@
         </mat-select>
       </mat-form-field>
       <div>
-        <app-horizontal-list>
-          <app-pipeline *ngFor="let job of floor[room]" [job]="job"></app-pipeline>
+        <app-horizontal-list class="pipeline-list">
+          <app-pipeline *ngFor="let job of jobs()"
+                        [color]="getPipelineColor(job.deadline)"
+                        [deadline]="formatTime(job.deadline)"
+                        [job]="job">
+          </app-pipeline>
         </app-horizontal-list>
       </div>
     </div>

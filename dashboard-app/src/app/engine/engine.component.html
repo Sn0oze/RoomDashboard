@@ -2,7 +2,6 @@
   <canvas
       #rendererCanvas
       id="renderCanvas"
-      (mousewheel)="onMousewheel($event)"
-      (click)="onClick($event)">
+      (mousedown)="getSelection($event)">
   </canvas>
 </div>

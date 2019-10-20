@@ -3,6 +3,7 @@ import {ElementRef, Injectable, NgZone, OnDestroy} from '@angular/core';
 import {Colors} from '../core/constants/colors';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 import {BehaviorSubject} from 'rxjs';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 
 @Injectable({
@@ -14,14 +15,10 @@ export class EngineService implements OnDestroy {
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
   private light: THREE.PointLight;
+  private controls: OrbitControls;
 
   private frameId: number = null;
-  private radius: number;
-  private theta: number;
-  private onMouseDownTheta: number;
-  private onMouseDownPhi: number;
-  private phi: number;
-  private onMouseDownPosition: THREE.Vector2;
+  private mouse: THREE.Vector2;
   private raycaster: THREE.Raycaster;
   private INTERSECTED = null;
 
@@ -54,7 +51,7 @@ export class EngineService implements OnDestroy {
     this.camera = new THREE.PerspectiveCamera(
       75, window.innerWidth / window.innerHeight, 0.1, 1000
     );
-    this.camera.position.z = initialCameraDistance;
+    this.camera.position.set( -16, 20, 24);
     this.scene.add(this.camera);
 
     this.light = new THREE.PointLight(0xffffff);
@@ -62,16 +59,20 @@ export class EngineService implements OnDestroy {
 
     this.scene.add(this.light);
 
-    this.radius = initialCameraDistance;
-    this.theta = 0;
-    this.onMouseDownTheta = 0;
-    this.phi = 0;
-    this.onMouseDownPhi = 0;
-    this.onMouseDownPosition = new THREE.Vector2();
+    this.mouse = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
     const mainBuilding = this.createBuilding(10);
     this.scene.add(mainBuilding);
+
+    // controls
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement );
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.1;
+    this.controls.screenSpacePanning = false;
+    this.controls.minDistance = initialCameraDistance;
+    this.controls.maxDistance = 100;
+    this.controls.maxPolarAngle = Math.PI / 2;
   }
 
   addFloor(color = 0x000000): THREE.Mesh {
@@ -80,9 +81,8 @@ export class EngineService implements OnDestroy {
     const material = new THREE.MeshBasicMaterial({color: color});
     // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
     const cube = new THREE.Mesh(geometry, material);
-    cube.rotation.x = Math.PI / 4;
-    cube.rotation.y = Math.PI / 4;
-    cube.castShadow = true;
+    // cube.rotation.x = Math.PI / 4;
+    // cube.rotation.y = Math.PI / 4;
     return cube;
   }
 
@@ -134,29 +134,7 @@ export class EngineService implements OnDestroy {
     this.renderer.setSize(width, height);
   }
 
-  onMouseWheel( event ): void  {
-    const movement = event.wheelDeltaY / 50;
-
-    if ( (this.radius - movement <= 35) || (this.radius - movement >= 60) ) {
-      return;
-    }
-
-    this.radius -= movement;
-
-    this.camera.position.x = this.radius * Math.sin( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 );
-    this.camera.position.y = this.radius * Math.sin( this.phi * Math.PI / 360 );
-    this.camera.position.z = this.radius * Math.cos( this.theta * Math.PI / 360 ) * Math.cos( this.phi * Math.PI / 360 );
-    this.camera.updateMatrix();
-  }
-
-  onMouseMove(event): void {
-    const intersects = this.getIntersection(event);
-    const block = intersects[0].object as THREE.Mesh;
-    const material = block.material as THREE.MeshBasicMaterial;
-    material.color.setHex( Colors.hover );
-  }
-
-  onClick(event): void {
+  getSelection(event): void {
     const intersects = this.getIntersection(event);
     if (intersects.length) {
       // Cast to any required because the the type of the intersect objects is forced to object3D
@@ -184,10 +162,10 @@ export class EngineService implements OnDestroy {
   }
 
   getIntersection(event): THREE.Intersection[] {
-    this.onMouseDownPosition.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
-    this.onMouseDownPosition.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
-    this.raycaster.setFromCamera( this.onMouseDownPosition, this.camera );
+    this.raycaster.setFromCamera( this.mouse, this.camera );
     return this.raycaster.intersectObjects( this.scene.children, true );
   }
 }

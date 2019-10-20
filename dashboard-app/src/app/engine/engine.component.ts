@@ -27,14 +27,7 @@ export class EngineComponent implements OnInit, OnDestroy {
     this.engine.floorClicked.unsubscribe();
   }
 
-  onMousewheel(event): void {
-    this.engine.onMouseWheel(event);
-  }
-  onMouseMove(event): void {
-    // this.engine.onMouseMove(event);
-  }
-
-  onClick(event): void {
-    this.engine.onClick(event);
+  getSelection(event): void {
+    this.engine.getSelection(event);
   }
 }

@@ -10,6 +10,7 @@ export class PipelineComponent implements OnInit {
 
   @Input() job: Job;
   @Input() color = '#64C7CC';
+  @Input() deadline: string;
 
   constructor() { }
 

@@ -2,5 +2,6 @@
   matRipple
   class="stack-pill"
   [ngStyle]="{backgroundColor: color}">
-  {{job.tradesmen}}
+  <div>{{job.tradesmen}}</div>
+  <div *ngIf="deadline" class="secondary-text">{{deadline}}</div>
 </div>

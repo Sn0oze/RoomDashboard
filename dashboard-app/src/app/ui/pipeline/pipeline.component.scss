@@ -1,48 +1,38 @@
-$border-width: .25rem;
-$pill-height: 3rem;
-$height: $border-width + $pill-height;
-$radius: $height / 2;
-$background-color: white;
+@import "variables";
 
 .stack-pill {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
-  height: $height;
+  height: $pill-height;
   overflow: auto;
-  /*
-  padding-left: $height;
-  padding-right: $radius;
-  margin: ($radius / 2) 0;
-  */
-  border-top-right-radius: $radius;
-  border-bottom-right-radius: $radius;
+  padding-left: $pill-height;
+  padding-right: $pill-radius;
+  margin: ($pill-radius / 2) 0;
+  border-top-right-radius: $pill-radius;
+  border-bottom-right-radius: $pill-radius;
   cursor: pointer;
   user-select: none;
-  border-top: $border-width solid $background-color;
-  border-bottom: $border-width solid $background-color;
-  border-right: $border-width solid $background-color;
-  padding: .5rem $radius;
-  margin-left: -$radius / 2;
+  flex-direction: column;
 }
 
-/*
+
 .stack-pill:before, .hexagon:after {
   content:" ";
   position: absolute;
-  height: $height;
-  width: $radius;
+  height: $pill-height;
+  width: $pill-radius;
   z-index: 2;
   cursor: default;
 }
 .stack-pill:before {
   left: 0;
-  border-radius: 0 $radius $radius 0;
-  background: $background-color;
+  border-radius: 0 $pill-radius $pill-radius 0;
+  background: $pill-border-color;
 }
 
-*/
+
 /*
 .hexagon:after {
   left: 100%;

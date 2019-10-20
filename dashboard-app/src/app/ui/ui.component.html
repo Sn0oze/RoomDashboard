@@ -2,7 +2,6 @@
   <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
   <ng-template #floorSelected>
     <div>
-      <p>Has floor</p>
       <mat-form-field>
         <mat-label>Select a Room</mat-label>
         <mat-select [(value)]="room">
@@ -10,17 +9,18 @@
         </mat-select>
       </mat-form-field>
       <div>
-        <app-horizontal-list class="pipeline-list">
-          <app-pipeline *ngFor="let job of jobs()"
-                        [color]="getPipelineColor(job.deadline)"
-                        [deadline]="formatTime(job.deadline)"
-                        [job]="job">
-          </app-pipeline>
-        </app-horizontal-list>
+        <app-vertical-list>
+          <app-stack-item *ngFor="let job of jobs(); let i = index">
+            <app-pipeline [color]="getPipelineColor(job.deadline, i)"
+                          [deadline]="formatTime(job.deadline)"
+                          [job]="job">
+            </app-pipeline>
+          </app-stack-item>
+        </app-vertical-list>
       </div>
     </div>
   </ng-template>
   <ng-template #noFloor>
-    <p>Has no floor</p>
+    <p>Click a floor to see more</p>
   </ng-template>
 </div>

@@ -38,7 +38,7 @@ export class EngineService implements OnDestroy {
 
   createScene(canvas: ElementRef<HTMLCanvasElement>): void {
     // The first step is to get the reference of the canvas element from our HTML document
-    const initialCameraDistance = 50;
+    const initialCameraDistance = 35;
     this.canvas = canvas.nativeElement;
 
     this.renderer = new THREE.WebGLRenderer({
@@ -137,7 +137,7 @@ export class EngineService implements OnDestroy {
   onMouseWheel( event ): void  {
     const movement = event.wheelDeltaY / 50;
 
-    if ( (this.radius - movement <= 20) || (this.radius - movement >= 60) ) {
+    if ( (this.radius - movement <= 35) || (this.radius - movement >= 60) ) {
       return;
     }
 

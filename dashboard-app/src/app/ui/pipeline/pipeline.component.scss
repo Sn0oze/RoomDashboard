@@ -7,37 +7,12 @@
   position: relative;
   height: $pill-height;
   overflow: auto;
-  padding-left: $pill-height;
-  padding-right: $pill-radius;
-  margin: ($pill-radius / 2) 0;
+  padding: 0 1rem;
   border-top-right-radius: $pill-radius;
   border-bottom-right-radius: $pill-radius;
   cursor: pointer;
   user-select: none;
   flex-direction: column;
+  overflow-y: hidden;
 }
-
-
-.stack-pill:before, .hexagon:after {
-  content:" ";
-  position: absolute;
-  height: $pill-height;
-  width: $pill-radius;
-  z-index: 2;
-  cursor: default;
-}
-.stack-pill:before {
-  left: 0;
-  border-radius: 0 $pill-radius $pill-radius 0;
-  background: $pill-border-color;
-}
-
-
-/*
-.hexagon:after {
-  left: 100%;
-  border-radius: 0 $radius $radius 0;
-  background:green;
-}
-*/
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, OnChanges, Input, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Job} from '../core/models/job.model';
 import * as moment from 'moment';
 import {Colors} from '../core/constants/colors';
@@ -37,16 +37,29 @@ export class UiComponent implements OnInit, OnChanges {
     return this.floor[this.room];
   }
 
-  getPipelineColor(utcString): string {
+  getPipelineColor(utcString: string, currentJob: number): string {
     let color = Colors.default;
+
+    const previousJob = this.jobs()[currentJob - 1];
+
     const deadline = moment.utc(utcString);
+
     if (deadline.isAfter(this.now)) {
-      color = Colors.green;
+      color = Colors.passive;
     } else {
       color = Colors.red;
     }
+
+    if (previousJob) {
+      const previousDeadline = moment.utc(previousJob.deadline);
+      if (previousDeadline.isBefore(this.now)) {
+        color = Colors.green;
+      }
+    }
+
     return this.toHexString(color);
   }
+
   toHexString(value: number): string {
     return `#${value.toString(16)}`;
   }

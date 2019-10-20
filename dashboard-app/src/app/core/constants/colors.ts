@@ -3,5 +3,6 @@ export enum Colors {
   active = 0xf66767,
   hover = 0x3c9d9b,
   red = 0xf66767,
-  green = 0xB2DDA5
+  green = 0xB2DDA5,
+  passive = 0xcccccc
 }

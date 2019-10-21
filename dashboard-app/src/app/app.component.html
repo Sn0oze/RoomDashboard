@@ -1,3 +1,7 @@
-<app-ui [floor]="floor"></app-ui>
 <app-engine (floorSelected)="onFloorSelected($event)"></app-engine>
+<app-ui>
+  <app-ui-widget>
+    <app-floor [floor]="floor"></app-floor>
+  </app-ui-widget>
+</app-ui>
 

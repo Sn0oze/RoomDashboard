@@ -1,0 +1,24 @@
+<ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
+<ng-template #floorSelected>
+  <div>
+    <mat-form-field>
+      <mat-label>Select a Room</mat-label>
+      <mat-select [(value)]="room">
+        <mat-option *ngFor="let room of rooms" [value]="room">{{room}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <app-vertical-list>
+        <app-stack-item *ngFor="let job of jobs(); let i = index">
+          <app-pipeline [color]="getPipelineColor(job.deadline, i)"
+                        [deadline]="formatTime(job.deadline)"
+                        [job]="job">
+          </app-pipeline>
+        </app-stack-item>
+      </app-vertical-list>
+    </div>
+  </div>
+</ng-template>
+<ng-template #noFloor>
+  <p>Click a floor to see more</p>
+</ng-template>

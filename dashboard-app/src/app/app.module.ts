@@ -15,6 +15,8 @@ import { HorizontalListComponent } from './core/components/horizontal-list/horiz
 import { VerticalListComponent } from './core/components/vertical-list/vertical-list.component';
 import { VerticalListItemComponent } from './core/components/vertical-list/vertical-list-item/vertical-list-item.component';
 import { StackItemComponent } from './core/components/vertical-list/stack-item/stack-item.component';
+import { UiWidgetComponent } from './ui/ui-widget/ui-widget.component';
+import { FloorComponent } from './ui/floor/floor.component';
 
 
 
@@ -28,7 +30,9 @@ import { StackItemComponent } from './core/components/vertical-list/stack-item/s
     HorizontalListComponent,
     VerticalListComponent,
     VerticalListItemComponent,
-    StackItemComponent
+    StackItemComponent,
+    UiWidgetComponent,
+    FloorComponent
   ],
   imports: [
     BrowserModule,

@@ -7,5 +7,5 @@
       {{job.tradesmen}}
     </strong>
   </div>
-  <div *ngIf="deadline" class="secondary-text">{{deadline}}</div>
+  <div *ngIf="job.deadline" class="secondary-text">{{formatTime(job.deadline)}}</div>
 </div>

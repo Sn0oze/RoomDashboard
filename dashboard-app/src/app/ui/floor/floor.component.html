@@ -10,10 +10,7 @@
     <div>
       <app-vertical-list>
         <app-stack-item *ngFor="let job of jobs(); let i = index">
-          <app-pipeline [color]="getPipelineColor(job.deadline, i)"
-                        [deadline]="formatTime(job.deadline)"
-                        [job]="job">
-          </app-pipeline>
+          <app-pipeline [color]="getPipelineColor(job.deadline, i)" [job]="job"></app-pipeline>
         </app-stack-item>
       </app-vertical-list>
     </div>

@@ -63,9 +63,4 @@ export class FloorComponent implements OnInit, OnChanges {
   toHexString(value: number): string {
     return `#${value.toString(16)}`;
   }
-
-  formatTime(utcString): string {
-    return moment.utc(utcString).format(TimeFormats.short);
-  }
-
 }

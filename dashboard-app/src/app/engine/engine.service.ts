@@ -22,7 +22,8 @@ export class EngineService implements OnDestroy {
   private raycaster: THREE.Raycaster;
   private INTERSECTED = null;
 
-  private mainBuilding: THREE.Group;
+  private constructionSite: THREE.Group;
+  private plane: THREE.Mesh;
 
   floorClicked: BehaviorSubject<string> = new BehaviorSubject('');
 
@@ -64,15 +65,20 @@ export class EngineService implements OnDestroy {
     this.mouse = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
-    this.mainBuilding = this.createBuilding(6);
-    this.scene.add(this.mainBuilding);
+    // Center scene to construction site
+    this.constructionSite = this.createSite();
+    new THREE.Box3().setFromObject( this.constructionSite ).getCenter( this.constructionSite.position ).multiplyScalar( - 1 );
+    this.scene.add(this.constructionSite);
 
-    /*
-    const planeGeometry = new THREE.PlaneGeometry( 50, 50, 1 );
+    // Ground plane
+    const planeGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 1 );
     const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xcccccc, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( planeGeometry, planeMaterial );
-    this.scene.add(plane);
-     */
+    this.plane = new THREE.Mesh( planeGeometry, planeMaterial );
+    this.plane.position.y =  this.constructionSite.position.y;
+    this.plane.rotation.x = - Math.PI / 2;
+    this.plane.receiveShadow = true;
+    this.scene.add(this.plane);
+
 
     // controls
     this.controls = new OrbitControls( this.camera, this.renderer.domElement );
@@ -98,10 +104,25 @@ export class EngineService implements OnDestroy {
       const color = i % 2 === 0 ? 0x000000 : Colors.default;
       const floor = this.addFloor(color);
       floor.userData.floor = this.formatFloorId(i);
-      floor.translateY(i * 1.5);
+      floor.translateY(1 + (i * 1.5));
       building.add(floor);
     }
     return building;
+  }
+
+  createSite(): THREE.Group {
+    const site = new THREE.Group();
+    site.add(this.createBuilding(6));
+
+    let building = this.createBuilding(5);
+    building.position.set(15, 0, 5);
+    site.add(building);
+
+    building = this.createBuilding(8);
+    building.position.set(15, 0, -15);
+    building.rotateY(45);
+    site.add(building);
+    return site;
   }
 
   formatFloorId(floorNumber: number): string {
@@ -156,6 +177,7 @@ export class EngineService implements OnDestroy {
         this.INTERSECTED.material.color.setHex( Colors.active );
         const floorData = this.INTERSECTED.userData as FloorUserData;
         this.floorClicked.next(floorData.floor);
+        console.log(this.INTERSECTED.position);
       }
     } else {
       if ( this.INTERSECTED) {
@@ -172,6 +194,6 @@ export class EngineService implements OnDestroy {
     this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
     this.raycaster.setFromCamera( this.mouse, this.camera );
-    return this.raycaster.intersectObjects( this.mainBuilding.children, true );
+    return this.raycaster.intersectObjects( this.constructionSite.children, true );
   }
 }

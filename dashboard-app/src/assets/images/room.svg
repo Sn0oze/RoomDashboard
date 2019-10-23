@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="148.9999999999999 97.99999999999858 254.00000000000034 155.00000000000142" width="250" height="151">
+  <defs>
+    <path d="M150 180L250 180L250 250L150 250L150 180Z" id="a8wevTpw9"></path>
+    <path d="M150 100L250 100L250 160L150 160L150 100Z" id="c1wZjyhSF"></path>
+    <path d="M270 100L340 100L340 200L270 200L270 100Z" id="cet3Fbusu"></path>
+    <path d="M270 220L400 220L400 250L270 250L270 220Z" id="f4hT3yBzi3"></path>
+    <path d="M360 100L400 100L400 150L360 150L360 100Z" id="a1iK1kgCTL"></path>
+    <path d="M400 100L400 250L150 250L150 100L400 100Z" id="a2jmbvoQxn"></path>
+    <path d="M190 160L150 160" id="abZDAQ1"></path>
+    <path d="M250 100L250 160L210 160" id="b1BRjKWmpC"></path>
+    <path d="M190 180L150 180" id="eztsP6VVn"></path>
+    <path d="M250 250L250 180L210 180" id="a4xMzAJToH"></path>
+    <path d="M300 200L270 200L270 100" id="f6E0hJEvZy"></path>
+    <path d="M340 100L340 200L318.5 200" id="foHTVbf4H"></path>
+    <path d="M380 150L360 150L360 99" id="b8h1lB5BdX"></path>
+    <path d="M340 220L270 220L270 250" id="a26cGKP0Le"></path>
+    <path d="M400 220L360 220" id="ev3O0lFFP"></path>
+  </defs>
+  <g>
+    <g>
+      <use xlink:href="#a8wevTpw9" opacity="1" fill="#cccccc" fill-opacity="1"></use>
+      <g>
+        <use xlink:href="#a8wevTpw9" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <use xlink:href="#c1wZjyhSF" opacity="1" fill="#cccccc" fill-opacity="1"></use>
+      <g>
+        <use xlink:href="#c1wZjyhSF" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <use xlink:href="#cet3Fbusu" opacity="1" fill="#cccccc" fill-opacity="1"></use>
+      <g>
+        <use xlink:href="#cet3Fbusu" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <use xlink:href="#f4hT3yBzi3" opacity="1" fill="#cccccc" fill-opacity="1"></use>
+      <g>
+        <use xlink:href="#f4hT3yBzi3" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <use xlink:href="#a1iK1kgCTL" opacity="1" fill="#cccccc" fill-opacity="1"></use>
+      <g>
+        <use xlink:href="#a1iK1kgCTL" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <g>
+        <use xlink:href="#a2jmbvoQxn" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use>
+      </g>
+    </g>
+    <g>
+      <g>
+        <use xlink:href="#abZDAQ1" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#b1BRjKWmpC" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#eztsP6VVn" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#a4xMzAJToH" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#f6E0hJEvZy" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#foHTVbf4H" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#b8h1lB5BdX" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#a26cGKP0Le" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g><g><g><use xlink:href="#ev3O0lFFP" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="2" stroke-opacity="1"></use></g></g></g></svg>

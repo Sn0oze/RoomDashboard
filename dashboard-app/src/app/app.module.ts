@@ -17,6 +17,7 @@ import { VerticalListItemComponent } from './core/components/vertical-list/verti
 import { StackItemComponent } from './core/components/vertical-list/stack-item/stack-item.component';
 import { UiWidgetComponent } from './ui/ui-widget/ui-widget.component';
 import { FloorComponent } from './ui/floor/floor.component';
+import { FloorPlanComponent } from './ui/floor-plan/floor-plan.component';
 
 
 
@@ -32,7 +33,8 @@ import { FloorComponent } from './ui/floor/floor.component';
     VerticalListItemComponent,
     StackItemComponent,
     UiWidgetComponent,
-    FloorComponent
+    FloorComponent,
+    FloorPlanComponent
   ],
   imports: [
     BrowserModule,

@@ -22,6 +22,8 @@ export class EngineService implements OnDestroy {
   private raycaster: THREE.Raycaster;
   private INTERSECTED = null;
 
+  private mainBuilding: THREE.Group;
+
   floorClicked: BehaviorSubject<string> = new BehaviorSubject('');
 
   public constructor(private ngZone: NgZone) {
@@ -62,8 +64,15 @@ export class EngineService implements OnDestroy {
     this.mouse = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
-    const mainBuilding = this.createBuilding(10);
-    this.scene.add(mainBuilding);
+    this.mainBuilding = this.createBuilding(6);
+    this.scene.add(this.mainBuilding);
+
+    /*
+    const planeGeometry = new THREE.PlaneGeometry( 50, 50, 1 );
+    const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xcccccc, side: THREE.DoubleSide} );
+    const plane = new THREE.Mesh( planeGeometry, planeMaterial );
+    this.scene.add(plane);
+     */
 
     // controls
     this.controls = new OrbitControls( this.camera, this.renderer.domElement );
@@ -80,10 +89,7 @@ export class EngineService implements OnDestroy {
     const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
     const material = new THREE.MeshBasicMaterial({color: color});
     // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
-    const cube = new THREE.Mesh(geometry, material);
-    // cube.rotation.x = Math.PI / 4;
-    // cube.rotation.y = Math.PI / 4;
-    return cube;
+    return new THREE.Mesh(geometry, material);
   }
 
   createBuilding(floors = 1): THREE.Group {
@@ -141,7 +147,7 @@ export class EngineService implements OnDestroy {
       // which does not have an material and color property.
       // const block = intersects[0] as any;
       // block.object.material.color.setHex(Colors.active);
-      if ( this.INTERSECTED !== intersects[ 0 ].object ) {
+      if ( this.INTERSECTED !== intersects[ 0 ].object) {
         if ( this.INTERSECTED ) {
           this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
         }
@@ -152,7 +158,7 @@ export class EngineService implements OnDestroy {
         this.floorClicked.next(floorData.floor);
       }
     } else {
-      if ( this.INTERSECTED ) {
+      if ( this.INTERSECTED) {
         this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
         this.floorClicked.next('');
 
@@ -166,6 +172,6 @@ export class EngineService implements OnDestroy {
     this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
     this.raycaster.setFromCamera( this.mouse, this.camera );
-    return this.raycaster.intersectObjects( this.scene.children, true );
+    return this.raycaster.intersectObjects( this.mainBuilding.children, true );
   }
 }

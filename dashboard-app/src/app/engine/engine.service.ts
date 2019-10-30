@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -146,7 +147,9 @@ export class EngineService implements OnDestroy {
         this.resize();
       });
       window.addEventListener('mousedown', (event) => {
-        this.getSelection(event);
+        if (event.target === this.canvas) {
+          this.getSelection(event);
+        }
       });
     });
   }
@@ -167,6 +170,14 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
+  }
+
+  getIntersection(event): THREE.Intersection[] {
+    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+
+    this.raycaster.setFromCamera( this.mouse, this.camera );
+    return this.raycaster.intersectObjects( this.constructionSite.children, true );
   }
 
   getSelection(event): void {
@@ -194,13 +205,5 @@ export class EngineService implements OnDestroy {
       }
       this.INTERSECTED = null;
     }
-  }
-
-  getIntersection(event): THREE.Intersection[] {
-    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
-
-    this.raycaster.setFromCamera( this.mouse, this.camera );
-    return this.raycaster.intersectObjects( this.constructionSite.children, true );
   }
 }

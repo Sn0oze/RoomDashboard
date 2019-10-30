@@ -10,14 +10,14 @@ import {
   MatRippleModule,
   MatListModule
 } from '@angular/material';
-import { PipelineComponent } from './ui/pipeline/pipeline.component';
+import { PipelineComponent } from './ui/floor/pipeline/pipeline.component';
 import { HorizontalListComponent } from './core/components/horizontal-list/horizontal-list.component';
 import { VerticalListComponent } from './core/components/vertical-list/vertical-list.component';
 import { VerticalListItemComponent } from './core/components/vertical-list/vertical-list-item/vertical-list-item.component';
 import { StackItemComponent } from './core/components/vertical-list/stack-item/stack-item.component';
 import { UiWidgetComponent } from './ui/ui-widget/ui-widget.component';
 import { FloorComponent } from './ui/floor/floor.component';
-import { FloorPlanComponent } from './ui/floor-plan/floor-plan.component';
+import { FloorPlanComponent } from './ui/floor/floor-plan/floor-plan.component';
 
 
 

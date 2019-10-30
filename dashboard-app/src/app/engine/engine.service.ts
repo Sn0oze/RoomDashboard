@@ -6,6 +6,7 @@ import {BehaviorSubject} from 'rxjs';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,6 +48,7 @@ export class EngineService implements OnDestroy {
       antialias: true // smooth edges
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.shadowMap.enabled = true;
 
     // create the scene
     this.scene = new THREE.Scene();
@@ -57,16 +59,17 @@ export class EngineService implements OnDestroy {
     this.camera.position.set( -16, 20, 24);
     this.scene.add(this.camera);
 
-    this.light = new THREE.PointLight(0xffffff);
-    this.light.position.set(0, 100, 0);
+    this.light = new THREE.PointLight(0xffffff, 1);
+    this.light.position.set(100, 100, 0);
+    this.light.castShadow = true;
+    // this.scene.add(this.light);
 
-    this.scene.add(this.light);
 
     this.mouse = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
     // Center scene to construction site
-    this.constructionSite = this.createSite();
+    this.constructionSite = this.createConstructionSite();
     new THREE.Box3().setFromObject( this.constructionSite ).getCenter( this.constructionSite.position ).multiplyScalar( - 1 );
     this.scene.add(this.constructionSite);
 
@@ -95,7 +98,10 @@ export class EngineService implements OnDestroy {
     const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
     const material = new THREE.MeshBasicMaterial({color: color});
     // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
-    return new THREE.Mesh(geometry, material);
+    const floor = new THREE.Mesh(geometry, material);
+    floor.castShadow = true;
+    // floor.receiveShadow = true;
+    return floor;
   }
 
   createBuilding(floors = 1): THREE.Group {
@@ -110,7 +116,7 @@ export class EngineService implements OnDestroy {
     return building;
   }
 
-  createSite(): THREE.Group {
+  createConstructionSite(): THREE.Group {
     const site = new THREE.Group();
     site.add(this.createBuilding(6));
 
@@ -140,6 +146,11 @@ export class EngineService implements OnDestroy {
       window.addEventListener('resize', () => {
         this.resize();
       });
+      window.addEventListener('mousedown', (event) => {
+        if (event.target === this.canvas) {
+          this.getSelection(event);
+        }
+      });
     });
   }
 
@@ -161,6 +172,14 @@ export class EngineService implements OnDestroy {
     this.renderer.setSize(width, height);
   }
 
+  getIntersection(event): THREE.Intersection[] {
+    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+
+    this.raycaster.setFromCamera( this.mouse, this.camera );
+    return this.raycaster.intersectObjects( this.constructionSite.children, true );
+  }
+
   getSelection(event): void {
     const intersects = this.getIntersection(event);
     if (intersects.length) {
@@ -177,7 +196,6 @@ export class EngineService implements OnDestroy {
         this.INTERSECTED.material.color.setHex( Colors.active );
         const floorData = this.INTERSECTED.userData as FloorUserData;
         this.floorClicked.next(floorData.floor);
-        console.log(this.INTERSECTED.position);
       }
     } else {
       if ( this.INTERSECTED) {
@@ -187,13 +205,5 @@ export class EngineService implements OnDestroy {
       }
       this.INTERSECTED = null;
     }
-  }
-
-  getIntersection(event): THREE.Intersection[] {
-    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
-
-    this.raycaster.setFromCamera( this.mouse, this.camera );
-    return this.raycaster.intersectObjects( this.constructionSite.children, true );
   }
 }

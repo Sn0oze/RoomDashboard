@@ -7,9 +7,9 @@ import { EngineService } from './engine.service';
 })
 export class EngineComponent implements OnInit, OnDestroy {
 
-  @ViewChild('rendererCanvas', { static: true }) rendererCanvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild('rendererCanvas', { static: true })
+  private rendererCanvas: ElementRef<HTMLCanvasElement>;
   @Output() floorSelected = new EventEmitter<string>();
-
 
   constructor(
     private engine: EngineService) { }
@@ -25,9 +25,5 @@ export class EngineComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.engine.floorClicked.unsubscribe();
-  }
-
-  getSelection(event): void {
-    this.engine.getSelection(event);
   }
 }

@@ -6,13 +6,12 @@
   justify-content: center;
   position: relative;
   height: $pill-height;
-  overflow: auto;
+  overflow: hidden;
   padding: 0 1rem;
   border-top-right-radius: $pill-radius;
   border-bottom-right-radius: $pill-radius;
   cursor: pointer;
   user-select: none;
   flex-direction: column;
-  overflow-y: hidden;
 }
 

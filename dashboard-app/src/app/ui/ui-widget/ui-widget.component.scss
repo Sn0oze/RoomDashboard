@@ -1,10 +1,20 @@
 @import "variables";
+$padding: 1rem;
+$margin: 1rem;
+$spacing: $padding + $margin;
+
 .ui-widget{
-  padding: 1rem;
-  margin: 1rem;
+  padding: $padding;
+  margin: $margin;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   border-radius: 4px;
-  width: 30vw;
+  width: calc(33vw - 2rem);
   position: fixed;
   background-color: $mainBgColor;
+}
+
+@media (max-width: 576px) {
+  .ui-widget{
+    width: calc(100% - 2rem);
+  }
 }

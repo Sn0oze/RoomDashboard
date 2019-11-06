@@ -152,6 +152,12 @@ export class EngineService implements OnDestroy {
           this.getSelection(event);
         }
       });
+      window.addEventListener('touchstart', (event) => {
+        const element = event.targetTouches[0];
+        if (element.target === this.canvas) {
+          this.getSelection(element);
+        }
+      });
     });
   }
 

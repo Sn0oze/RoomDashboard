@@ -49,8 +49,12 @@
    opacity: 0.66;
  }
 
- .room{
-   stroke: black;
-   stroke-width: 4px;
-   fill: white;
- }
+.room{
+  stroke: black;
+  stroke-width: 2px;
+  fill: white;
+  cursor: pointer;
+}
+app-floor svg{
+  outline: 2px solid black;
+}

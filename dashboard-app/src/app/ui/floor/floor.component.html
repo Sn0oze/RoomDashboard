@@ -1,7 +1,7 @@
 <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
 <ng-template #floorSelected>
   <div>
-    <app-floor-plan></app-floor-plan>
+    <app-floor-plan (floorSelected)="floorChanges($event)"></app-floor-plan>
     <mat-form-field>
       <mat-label>Select a Room</mat-label>
       <mat-select [(value)]="room">

@@ -49,18 +49,24 @@ export class FloorComponent implements OnInit, OnChanges {
     } else {
       color = Colors.red;
     }
-
+    /*
     if (previousJob) {
       const previousDeadline = moment.utc(previousJob.deadline);
       if (previousDeadline.isBefore(this.now)) {
         color = Colors.green;
       }
     }
+     */
 
     return this.toHexString(color);
   }
 
   toHexString(value: number): string {
     return `#${value.toString(16)}`;
+  }
+
+  floorChanges(event): void {
+    const floorNumber = this.room.split('_')[1][0];
+    this.room = `room_${floorNumber}${event}`;
   }
 }

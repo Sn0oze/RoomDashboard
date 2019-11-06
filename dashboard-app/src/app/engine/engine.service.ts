@@ -59,10 +59,11 @@ export class EngineService implements OnDestroy {
     this.camera.position.set( -16, 20, 24);
     this.scene.add(this.camera);
 
-    this.light = new THREE.PointLight(0xffffff, 1);
-    this.light.position.set(100, 100, 0);
-    this.light.castShadow = true;
-    // this.scene.add(this.light);
+    this.light = new THREE.PointLight(0xf9ffb5, 1);
+    this.light.position.set(25, 25, 0);
+    // this.light.castShadow = true;
+    this.scene.add(this.light);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 1));
 
 
     this.mouse = new THREE.Vector2();
@@ -79,7 +80,7 @@ export class EngineService implements OnDestroy {
     this.plane = new THREE.Mesh( planeGeometry, planeMaterial );
     this.plane.position.y =  this.constructionSite.position.y;
     this.plane.rotation.x = - Math.PI / 2;
-    this.plane.receiveShadow = true;
+    // this.plane.receiveShadow = true;
     this.scene.add(this.plane);
 
 
@@ -96,10 +97,10 @@ export class EngineService implements OnDestroy {
   addFloor(color = 0x000000): THREE.Mesh {
     const dimensions = {width: 7, height: 1, depth: 14};
     const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
-    const material = new THREE.MeshBasicMaterial({color: color});
+    const material = new THREE.MeshLambertMaterial({color: color});
     // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
     const floor = new THREE.Mesh(geometry, material);
-    floor.castShadow = true;
+    // floor.castShadow = true;
     // floor.receiveShadow = true;
     return floor;
   }
@@ -107,10 +108,10 @@ export class EngineService implements OnDestroy {
   createBuilding(floors = 1): THREE.Group {
     const building = new THREE.Group();
     for (let i = 0; i < floors; i++) {
-      const color = i % 2 === 0 ? 0x000000 : Colors.default;
+      const color = i % 2 === 0 ? 0x252a3d : Colors.default;
       const floor = this.addFloor(color);
       floor.userData.floor = this.formatFloorId(i);
-      floor.translateY(1 + (i * 1.5));
+      floor.translateY(1 + (i));
       building.add(floor);
     }
     return building;

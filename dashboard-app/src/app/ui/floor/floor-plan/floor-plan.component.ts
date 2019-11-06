@@ -14,6 +14,7 @@ export class FloorPlanComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    /*
     const self = this;
     const element = this.chartContainer.nativeElement;
     const ratio = 0.5;
@@ -40,6 +41,8 @@ export class FloorPlanComponent implements OnInit {
       d3.select(this).style('fill', '#cccccc');
       self.floorSelected.emit(d.data.id);
     });
+
+     */
   }
 
   getLayout(dimensions: {width: number, height: number}): Room[] {
@@ -82,3 +85,4 @@ class Room {
 
 class RoomData {
   id: string;
+}

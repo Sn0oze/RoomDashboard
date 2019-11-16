@@ -14,52 +14,72 @@ export class FloorPlanComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    /*
+    const domainMin = 0;
+    const domainMax = 100;
     const self = this;
     const element = this.chartContainer.nativeElement;
-    const ratio = 0.5;
+    const ratio = 0.417;
     const dimensions = {width: element.offsetWidth, height: element.offsetWidth * ratio};
-    const data = this.getLayout(dimensions); // ['room_1', 'room_2', 'room_3', 'room_4'];
+    const data = this.getLayout(domainMax, 6); // ['room_1', 'room_2', 'room_3', 'room_4'];
+    const backgroundImage: ImageData = {
+      url: '../assets/images/floorplan2.png',
+      width: dimensions.width,
+      height: dimensions.height,
+    };
 
     const svg = d3.select(element).append('svg')
       .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
-      .style('background-color', 'white');
+      .attr('height', dimensions.height);
+
+    const xscale = d3.scaleLinear()
+        .domain([domainMin, domainMax])
+        .range([0, dimensions.width]);
+    const yscale = d3.scaleLinear()
+        .domain([domainMin, domainMax])
+        .range([dimensions.height, 0]);
+    console.log([xscale(0), xscale(50), xscale(100)]);
+    svg.append('g')
+      .append('image')
+      .datum(backgroundImage)
+      .attr('xlink:href', image => image.url)
+      .attr('width', image => image.width)
+      .attr('height', image => image.height);
 
     svg.selectAll('rect')
       .data(data)
       .enter()
       .append('rect')
-      .attr('x', (d) => d.x)
-      .attr('y', (d) => d.y)
-      .attr('width', (d) => d.width)
-      .attr('height', (d) => d.height)
-      .attr('class', 'room');
+      .attr('x', (d) => xscale(d.x))
+      .attr('y', (d) => yscale( d.y))
+      .attr('width', (d) => xscale(d.width))
+      .attr('height', (d) => yscale(d.height))
+      .attr('class', 'room')
+      .style('fill', '#cccccc')
+      .style('opacity', 0.67);
+
     const rooms = d3.selectAll('.room');
     rooms.on('click',  function(d: Room) {
-      d3.selectAll('rect').style('fill', '#ffffff');
-      d3.select(this).style('fill', '#cccccc');
+      d3.selectAll('rect').style('fill', '#cccccc');
+      d3.select(this).style('fill', '#313131');
       self.floorSelected.emit(d.data.id);
     });
-
-     */
   }
 
-  getLayout(dimensions: {width: number, height: number}): Room[] {
-    const corridorWidth = 20;
+  getLayout(max: number, divisions: number): Room[] {
     const coords = [];
-    const margin = 5;
-    coords.push(new Room(margin, margin, (dimensions.width / 2), (dimensions.height / 2) - margin, '0'));
-    coords.push(
-      new Room(
-        margin,
-        (((dimensions.height / 2) + corridorWidth) - margin),
-        dimensions.width / 2,
-        (dimensions.height / 2) - margin - corridorWidth,
-        '1'));
+    const length = max / divisions;
+    coords.push(new Room(0, max, max, max / 2, '0'));
+    coords.push(new Room(0, max / 2, max, max / 2, '1'));
+
     return coords;
   }
 
+}
+
+interface ImageData {
+  url: string;
+  width: number;
+  height: number;
 }
 
 class Room {

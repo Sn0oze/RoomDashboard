@@ -3,11 +3,25 @@ import * as moment from 'moment';
 import {Job} from '../../core/models/job.model';
 import {Colors} from '../../core/constants/colors';
 import {TimeFormats} from '../../core/constants/time-formats';
+import {animate, animateChild, query, stagger, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-floor',
   templateUrl: './floor.component.html',
-  styleUrls: ['./floor.component.scss']
+  styleUrls: ['./floor.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: '0' }),
+        animate('.5s ease-out', style({ opacity: '1' })),
+      ]),
+    ]),
+    trigger('list', [
+      transition(':enter', [
+        query('@fadeIn', stagger(300, animateChild()))
+      ]),
+    ])
+  ]
 })
 export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: Object;

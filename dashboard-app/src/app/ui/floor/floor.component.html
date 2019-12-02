@@ -6,11 +6,11 @@
       <p>Floor {{floorNumber()}}</p>
       <app-floor-plan [floor]="floor" (floorSelected)="floorChanges($event)"></app-floor-plan>
       <div>
-        <app-vertical-list>
-          <app-stack-item style="width: 250px" *ngFor="let job of pipeline; let i = index">
-            <app-pipeline [color]="getPipelineColor(job.start, i)" [job]="job"></app-pipeline>
+        <app-horizontal-list>
+          <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline; let i = index">
+            <app-pipeline [color]="color(job)" [job]="job"></app-pipeline>
           </app-stack-item>
-        </app-vertical-list>
+        </app-horizontal-list>
       </div>
     </div>
   </ng-template>

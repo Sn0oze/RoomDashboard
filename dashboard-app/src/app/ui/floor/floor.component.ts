@@ -1,8 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import * as moment from 'moment';
 import {Job} from '../../core/models/job.model';
-import {Colors} from '../../core/constants/colors';
-import {TimeFormats} from '../../core/constants/time-formats';
+import {TradeColors} from '../../core/constants/colors';
 import {animate, animateChild, query, stagger, style, transition, trigger} from '@angular/animations';
 import {FloorUserData} from '../../core/models/floor-user-data.model';
 
@@ -28,7 +26,7 @@ export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: FloorUserData;
   zone: string;
   pipeline: Job[];
-  private now = moment.utc('2019-10-21T21:20:20Z');
+  // private now = moment.utc();
 
   constructor() { }
 
@@ -47,26 +45,12 @@ export class FloorComponent implements OnInit, OnChanges {
     }
   }
 
-  getPipelineColor(utcString: string, currentJob: number): string {
-    let color ; // = Colors.default;
-
-    const deadline = moment.utc(utcString);
-
-    if (deadline.isAfter(this.now)) {
-      color = Colors.passive;
-    } else {
-      color = Colors.red;
-    }
-
-    return this.toHexString(color);
+  color(job: Job): string {
+    return TradeColors[job.trade];
   }
 
   floorNumber(): number {
     return parseInt((this.floor.floor).split('_')[1], 10) + 1;
-  }
-
-  toHexString(value: number): string {
-    return `#${value.toString(16)}`;
   }
 
   floorChanges(event): void {

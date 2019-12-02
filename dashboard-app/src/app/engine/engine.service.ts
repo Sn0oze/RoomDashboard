@@ -31,9 +31,9 @@ export class EngineService implements OnDestroy {
   private plane: THREE.Mesh;
 
   floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
-  private composer: EffectComposer;
-  private outlinePass: OutlinePass;
-  private renderPass: RenderPass;
+  // private composer: EffectComposer;
+  // private outlinePass: OutlinePass;
+  // private renderPass: RenderPass;
 
   public constructor(private ngZone: NgZone, private sceneService: SceneService) {
   }
@@ -101,6 +101,7 @@ export class EngineService implements OnDestroy {
     this.controls.maxDistance = 100;
     this.controls.maxPolarAngle = Math.PI / 2;
 
+    /*
     this.composer = new EffectComposer( this.renderer );
     this.renderPass = new RenderPass( this.scene, this.camera );
     this.composer.addPass( this.renderPass );
@@ -110,6 +111,7 @@ export class EngineService implements OnDestroy {
     this.outlinePass.visibleEdgeColor.set('#000000');
     this.outlinePass.hiddenEdgeColor.set('#190a05');
     this.composer.addPass( this.outlinePass );
+     */
   }
 
   animate(): void {
@@ -153,7 +155,7 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
-    this.composer.setSize( width, height );
+    // this.composer.setSize( width, height );
   }
 
   getIntersection(event): THREE.Intersection[] {
@@ -178,8 +180,9 @@ export class EngineService implements OnDestroy {
         }
         this.INTERSECTED = intersects[ 0 ].object;
         this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
+        console.log(this.INTERSECTED, this.constructionSite);
         this.INTERSECTED.material.color.setHex( Colors.active );
-        this.outlinePass.selectedObjects = [this.INTERSECTED];
+        // this.outlinePass.selectedObjects = [this.INTERSECTED];
         const floorData = this.INTERSECTED.userData as FloorUserData;
         this.floorClicked.next(floorData);
       }
@@ -189,7 +192,6 @@ export class EngineService implements OnDestroy {
         this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
         this.outlinePass.selectedObjects = [];
         this.floorClicked.next(null);
-        +/
          */
 
       }

@@ -4,6 +4,7 @@ import {Job} from '../../core/models/job.model';
 import {Colors} from '../../core/constants/colors';
 import {TimeFormats} from '../../core/constants/time-formats';
 import {animate, animateChild, query, stagger, style, transition, trigger} from '@angular/animations';
+import {FloorUserData} from '../../core/models/floor-user-data.model';
 
 @Component({
   selector: 'app-floor',
@@ -24,11 +25,10 @@ import {animate, animateChild, query, stagger, style, transition, trigger} from 
   ]
 })
 export class FloorComponent implements OnInit, OnChanges {
-  @Input() floor: Object;
-
-  rooms: string[];
-  room: string;
-  private now = moment.utc();
+  @Input() floor: FloorUserData;
+  zone: string;
+  pipeline: [];
+  private now = moment.utc('2019-10-21T21:20:20Z');
 
   constructor() { }
 
@@ -38,23 +38,22 @@ export class FloorComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const newFloor = changes.floor.currentValue;
     if (newFloor) {
-      this.rooms = Object.keys(newFloor);
-      this.room = this.rooms[0];
+      this.zone = Object.keys(newFloor.data)[0];
+      console.log('new', newFloor, this.zone);
+      this.pipeline = newFloor.data[this.zone].pipeline;
 
     } else {
-      this.rooms = [];
-      this.room = '';
+      this.pipeline = [];
+      this.zone = '';
     }
   }
 
   jobs(): Job[] {
-    return this.floor[this.room];
+    return this.pipeline;
   }
 
   getPipelineColor(utcString: string, currentJob: number): string {
-    let color = Colors.default;
-
-    const previousJob = this.jobs()[currentJob - 1];
+    let color ; // = Colors.default;
 
     const deadline = moment.utc(utcString);
 
@@ -63,14 +62,6 @@ export class FloorComponent implements OnInit, OnChanges {
     } else {
       color = Colors.red;
     }
-    /*
-    if (previousJob) {
-      const previousDeadline = moment.utc(previousJob.deadline);
-      if (previousDeadline.isBefore(this.now)) {
-        color = Colors.green;
-      }
-    }
-     */
 
     return this.toHexString(color);
   }
@@ -80,7 +71,6 @@ export class FloorComponent implements OnInit, OnChanges {
   }
 
   floorChanges(event): void {
-    const floorNumber = this.room.split('_')[1][0];
-    this.room = `room_${floorNumber}${event}`;
+    this.zone = `zone_${event}`;
   }
 }

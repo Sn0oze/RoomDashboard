@@ -2,6 +2,8 @@
   <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
   <ng-template #floorSelected>
     <div>
+      <h2>Building {{floor.building}}</h2>
+      <p>Floor {{floorNumber()}}</p>
       <app-floor-plan [floor]="floor" (floorSelected)="floorChanges($event)"></app-floor-plan>
       <div>
         <app-vertical-list>

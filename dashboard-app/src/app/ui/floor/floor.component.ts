@@ -27,7 +27,7 @@ import {FloorUserData} from '../../core/models/floor-user-data.model';
 export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: FloorUserData;
   zone: string;
-  pipeline: [];
+  pipeline: Job[];
   private now = moment.utc('2019-10-21T21:20:20Z');
 
   constructor() { }
@@ -39,17 +39,12 @@ export class FloorComponent implements OnInit, OnChanges {
     const newFloor = changes.floor.currentValue;
     if (newFloor) {
       this.zone = Object.keys(newFloor.data)[0];
-      console.log('new', newFloor, this.zone);
       this.pipeline = newFloor.data[this.zone].pipeline;
 
     } else {
       this.pipeline = [];
       this.zone = '';
     }
-  }
-
-  jobs(): Job[] {
-    return this.pipeline;
   }
 
   getPipelineColor(utcString: string, currentJob: number): string {
@@ -66,11 +61,16 @@ export class FloorComponent implements OnInit, OnChanges {
     return this.toHexString(color);
   }
 
+  floorNumber(): number {
+    return parseInt((this.floor.floor).split('_')[1], 10) + 1;
+  }
+
   toHexString(value: number): string {
     return `#${value.toString(16)}`;
   }
 
   floorChanges(event): void {
     this.zone = `zone_${event}`;
+    this.pipeline = this.floor.data[this.zone].pipeline;
   }
 }

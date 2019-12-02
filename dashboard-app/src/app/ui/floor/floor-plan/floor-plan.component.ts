@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, Output, EventEmitter} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, Output, EventEmitter, Input} from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -7,20 +7,22 @@ import * as d3 from 'd3';
   styleUrls: ['./floor-plan.component.scss']
 })
 export class FloorPlanComponent implements OnInit {
+  @Input() floor: any;
   @Output() floorSelected = new EventEmitter<string>();
   @ViewChild('svgContainer', {static: true})
-  private chartContainer: ElementRef;
+    private chartContainer: ElementRef;
 
   constructor() { }
 
   ngOnInit() {
+    console.log(this.floor);
     const domainMin = 0;
     const domainMax = 100;
     const self = this;
     const element = this.chartContainer.nativeElement;
     const ratio = 0.417;
     const dimensions = {width: element.offsetWidth, height: element.offsetWidth * ratio};
-    const data = this.getLayout(domainMax, 6); // ['room_1', 'room_2', 'room_3', 'room_4'];
+    const data = this.twoZoneLayout(domainMax, 6); // ['room_1', 'room_2', 'room_3', 'room_4'];
     const backgroundImage: ImageData = {
       url: '../assets/images/floorplan2.png',
       width: dimensions.width,
@@ -35,9 +37,9 @@ export class FloorPlanComponent implements OnInit {
         .domain([domainMin, domainMax])
         .range([0, dimensions.width]);
     const yscale = d3.scaleLinear()
-        .domain([domainMin, domainMax])
+        .domain([domainMax, domainMin])
         .range([dimensions.height, 0]);
-    console.log([xscale(0), xscale(50), xscale(100)]);
+
     svg.append('g')
       .append('image')
       .datum(backgroundImage)
@@ -53,11 +55,20 @@ export class FloorPlanComponent implements OnInit {
       .attr('y', (d) => yscale( d.y))
       .attr('width', (d) => xscale(d.width))
       .attr('height', (d) => yscale(d.height))
-      .attr('class', 'room')
-      .style('fill', '#cccccc')
+      .attr('class', 'zone')
+      .style('fill', (d) => d.data.id === '0' ? '#313131' : '#cccccc')
       .style('opacity', 0.67);
 
-    const rooms = d3.selectAll('.room');
+    svg.selectAll('text')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('class', 'zone-label')
+      .attr('x', d => xscale(d.x + (d.width / 2)))
+      .attr('y', d => yscale(d.y + (d.height / 2)))
+      .text(d => `Zone ${d.data.id}`);
+
+    const rooms = d3.selectAll('.zone');
     rooms.on('click',  function(d: Room) {
       d3.selectAll('rect').style('fill', '#cccccc');
       d3.select(this).style('fill', '#313131');
@@ -65,15 +76,33 @@ export class FloorPlanComponent implements OnInit {
     });
   }
 
-  getLayout(max: number, divisions: number): Room[] {
+  twoZoneLayout(max: number, divisions: number): Room[] {
+    const coords = [];
+    coords.push(new Room(0, max / 2, max, max / 2, '0'));
+    coords.push(new Room(0, 0, max, max / 2, '1'));
+    // console.log(this.subDivide(max, divisions));
+    // coords = this.subDivide(max, divisions);
+    return coords;
+  }
+  subDivide(max: number, divisions: number): Room[] {
     const coords = [];
     const length = max / divisions;
-    coords.push(new Room(0, max, max, max / 2, '0'));
-    coords.push(new Room(0, max / 2, max, max / 2, '1'));
+    for (let i = 0; i < divisions; i++) {
+      const x = i * length;
+      const width = length;
+      const y = max;
+      const height = max / 2;
+      coords.push(new Room(x, y, width, height, i.toString()));
+    }
 
     return coords;
   }
 
+}
+
+interface Division {
+  start: number;
+  width: number;
 }
 
 interface ImageData {

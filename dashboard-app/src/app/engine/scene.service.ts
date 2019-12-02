@@ -28,12 +28,10 @@ export class SceneService {
       const floors = building.data;
       const coords = building.coords;
 
-      Object.entries(floors).forEach(([floor, zones], index) => {
-        const buildingModel = this.createBuilding(floors, buildingName);
-        buildingModel.position.set(coords.x, coords.y, coords.z);
-        buildingModel.rotateY(coords.rotation);
-        site.add(buildingModel);
-      });
+      const buildingModel = this.createBuilding(floors, buildingName);
+      buildingModel.position.set(coords.x, coords.y, coords.z);
+      buildingModel.rotateY(coords.rotation);
+      site.add(buildingModel);
     }));
     return site;
   }

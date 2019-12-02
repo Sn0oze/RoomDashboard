@@ -3,14 +3,18 @@ import {ElementRef, Injectable, NgZone, OnDestroy} from '@angular/core';
 import {Colors} from '../core/constants/colors';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 import {BehaviorSubject} from 'rxjs';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+import {OutlinePass} from 'three/examples/jsm/postprocessing/OutlinePass';
+import {SceneService} from './scene.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class EngineService implements OnDestroy {
+  private container: HTMLDivElement;
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
@@ -26,9 +30,12 @@ export class EngineService implements OnDestroy {
   private constructionSite: THREE.Group;
   private plane: THREE.Mesh;
 
-  floorClicked: BehaviorSubject<string> = new BehaviorSubject('');
+  floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
+  private composer: EffectComposer;
+  private outlinePass: OutlinePass;
+  private renderPass: RenderPass;
 
-  public constructor(private ngZone: NgZone) {
+  public constructor(private ngZone: NgZone, private sceneService: SceneService) {
   }
 
   public ngOnDestroy() {
@@ -37,24 +44,25 @@ export class EngineService implements OnDestroy {
     }
   }
 
-  createScene(canvas: ElementRef<HTMLCanvasElement>): void {
+  createScene(canvas: ElementRef<HTMLCanvasElement>, container: ElementRef<HTMLDivElement>): void {
     // The first step is to get the reference of the canvas element from our HTML document
     const initialCameraDistance = 35;
     this.canvas = canvas.nativeElement;
+    this.container = container.nativeElement;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       alpha: true,    // transparent background
       antialias: true // smooth edges
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(this.container.offsetWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
 
     // create the scene
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
-      75, window.innerWidth / window.innerHeight, 0.1, 1000
+      75, this.container.offsetWidth / window.innerHeight, 0.1, 1000
     );
     this.camera.position.set( -16, 20, 24);
     this.scene.add(this.camera);
@@ -70,13 +78,13 @@ export class EngineService implements OnDestroy {
     this.raycaster = new THREE.Raycaster();
 
     // Center scene to construction site
-    this.constructionSite = this.createConstructionSite();
+    this.constructionSite = this.sceneService.buildScene();
     new THREE.Box3().setFromObject( this.constructionSite ).getCenter( this.constructionSite.position ).multiplyScalar( - 1 );
     this.scene.add(this.constructionSite);
 
     // Ground plane
     const planeGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 1 );
-    const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xcccccc, side: THREE.DoubleSide} );
+    const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xdddddd, side: THREE.DoubleSide} );
     this.plane = new THREE.Mesh( planeGeometry, planeMaterial );
     this.plane.position.y =  this.constructionSite.position.y;
     this.plane.rotation.x = - Math.PI / 2;
@@ -92,48 +100,16 @@ export class EngineService implements OnDestroy {
     this.controls.minDistance = initialCameraDistance;
     this.controls.maxDistance = 100;
     this.controls.maxPolarAngle = Math.PI / 2;
-  }
 
-  addFloor(color = 0x000000): THREE.Mesh {
-    const dimensions = {width: 7, height: 1, depth: 14};
-    const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
-    const material = new THREE.MeshLambertMaterial({color: color});
-    // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
-    const floor = new THREE.Mesh(geometry, material);
-    // floor.castShadow = true;
-    // floor.receiveShadow = true;
-    return floor;
-  }
-
-  createBuilding(floors = 1): THREE.Group {
-    const building = new THREE.Group();
-    for (let i = 0; i < floors; i++) {
-      const color = i % 2 === 0 ? 0x252a3d : Colors.default;
-      const floor = this.addFloor(color);
-      floor.userData.floor = this.formatFloorId(i);
-      floor.translateY(1 + (i));
-      building.add(floor);
-    }
-    return building;
-  }
-
-  createConstructionSite(): THREE.Group {
-    const site = new THREE.Group();
-    site.add(this.createBuilding(6));
-
-    let building = this.createBuilding(5);
-    building.position.set(15, 0, 5);
-    site.add(building);
-
-    building = this.createBuilding(8);
-    building.position.set(15, 0, -15);
-    building.rotateY(45);
-    site.add(building);
-    return site;
-  }
-
-  formatFloorId(floorNumber: number): string {
-    return `floor_${floorNumber}`;
+    this.composer = new EffectComposer( this.renderer );
+    this.renderPass = new RenderPass( this.scene, this.camera );
+    this.composer.addPass( this.renderPass );
+    this.outlinePass = new OutlinePass( new THREE.Vector2( this.container.offsetWidth, window.innerHeight ), this.scene, this.camera );
+    this.outlinePass.edgeStrength = 3;
+    this.outlinePass.edgeThickness = 1;
+    this.outlinePass.visibleEdgeColor.set('#000000');
+    this.outlinePass.hiddenEdgeColor.set('#190a05');
+    this.composer.addPass( this.outlinePass );
   }
 
   animate(): void {
@@ -170,18 +146,20 @@ export class EngineService implements OnDestroy {
   }
 
   resize(): void {
-    const width = window.innerWidth;
+    const width = this.container.offsetWidth;
     const height = window.innerHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
+    this.composer.setSize( width, height );
   }
 
   getIntersection(event): THREE.Intersection[] {
-    this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
-    this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+    const canvasBounds = this.renderer.getContext().canvas.getBoundingClientRect();
+    this.mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
+    this.mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
 
     this.raycaster.setFromCamera( this.mouse, this.camera );
     return this.raycaster.intersectObjects( this.constructionSite.children, true );
@@ -201,16 +179,21 @@ export class EngineService implements OnDestroy {
         this.INTERSECTED = intersects[ 0 ].object;
         this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
         this.INTERSECTED.material.color.setHex( Colors.active );
+        this.outlinePass.selectedObjects = [this.INTERSECTED];
         const floorData = this.INTERSECTED.userData as FloorUserData;
-        this.floorClicked.next(floorData.floor);
+        this.floorClicked.next(floorData);
       }
     } else {
       if ( this.INTERSECTED) {
+        /*
         this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
-        this.floorClicked.next('');
+        this.outlinePass.selectedObjects = [];
+        this.floorClicked.next(null);
+        +/
+         */
 
       }
-      this.INTERSECTED = null;
+      // this.INTERSECTED = null;
     }
   }
 }

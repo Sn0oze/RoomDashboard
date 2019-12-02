@@ -15,7 +15,6 @@ export class FloorPlanComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.floor);
     const domainMin = 0;
     const domainMax = 100;
     const self = this;

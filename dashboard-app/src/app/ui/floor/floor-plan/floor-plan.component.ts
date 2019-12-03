@@ -21,7 +21,7 @@ export class FloorPlanComponent implements OnInit {
     const element = this.chartContainer.nativeElement;
     const ratio = 0.417;
     const dimensions = {width: element.offsetWidth, height: element.offsetWidth * ratio};
-    const data = this.twoZoneLayout(domainMax, 6); // ['room_1', 'room_2', 'room_3', 'room_4'];
+    const data = this.twoZoneLayout(domainMax, 6);
     const backgroundImage: ImageData = {
       url: '../assets/images/floorplan2.png',
       width: dimensions.width,

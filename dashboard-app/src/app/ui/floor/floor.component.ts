@@ -36,7 +36,9 @@ export class FloorComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const newFloor = changes.floor.currentValue;
     if (newFloor) {
-      this.zone = Object.keys(newFloor.data)[0];
+      if (!this.zone) {
+        this.zone = Object.keys(newFloor.data)[0];
+      }
       this.pipeline = newFloor.data[this.zone].pipeline;
 
     } else {

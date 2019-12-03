@@ -14,6 +14,7 @@ export class FloorPlanComponent implements OnInit, OnChanges {
   @ViewChild('svgContainer', {static: true})
   private chartContainer: ElementRef;
   private defaultOpacity = 0.4;
+  private selectedOpacity = 0.8;
 
   constructor() { }
 
@@ -59,7 +60,7 @@ export class FloorPlanComponent implements OnInit, OnChanges {
       .attr('height', (d) => yscale(d.height))
       .attr('class', 'zone')
       .style('fill', (d, i) => this.colors[i])
-      .style('opacity', self.defaultOpacity);
+      .style('opacity', ((d, i) => i === 0 ? self.selectedOpacity : self.defaultOpacity));
 
     svg.selectAll('text')
       .data(data)
@@ -73,7 +74,7 @@ export class FloorPlanComponent implements OnInit, OnChanges {
     const rooms = d3.selectAll('.zone');
     rooms.on('click',  function(d: Room) {
       d3.selectAll('rect').style('opacity', self.defaultOpacity);
-      d3.select(this).style('opacity', 0.8);
+      d3.select(this).style('opacity', self.selectedOpacity);
       self.floorSelected.emit(d.data.id);
     });
   }

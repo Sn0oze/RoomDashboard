@@ -31,7 +31,7 @@ export class PipelineComponent implements OnInit {
   }
 
   progress(): SafeStyle {
-    const percentage = Math.floor((this.now.clone().diff(this.start) / this.end.clone().diff(this.start)) * 100);
+    const percentage = Math.floor((this.now.diff(this.start) / this.end.diff(this.start)) * 100);
     const offset = percentage >= 50 ? this.lineWidth : 0;
     return this.sanitizer.bypassSecurityTrustStyle(`calc(${percentage}% - ${offset}px)`);
   }

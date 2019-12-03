@@ -14,7 +14,7 @@ export class PipelineComponent implements OnInit {
 
   @Input() job: Job;
   @Input() color = '#64C7CC';
-  private now = moment.utc().add(3, 'week').add(4, 'day');
+  private now = moment.utc().add(10, 'week').add(4, 'day');
   private lineWidth = 4;
   private start: Moment;
   private end: Moment;

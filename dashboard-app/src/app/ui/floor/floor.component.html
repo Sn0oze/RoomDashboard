@@ -5,9 +5,10 @@
       <h2>Building {{floor.building}}</h2>
       <p>Floor {{floorNumber()}}</p>
       <app-floor-plan [floor]="floor" (floorSelected)="floorChanges($event)"></app-floor-plan>
+      <p>{{text}}</p>
       <div>
         <app-horizontal-list>
-          <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline; let i = index">
+          <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline">
             <app-pipeline [color]="color(job)" [job]="job"></app-pipeline>
           </app-stack-item>
         </app-horizontal-list>

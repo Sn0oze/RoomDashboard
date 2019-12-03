@@ -3,6 +3,7 @@ import {Job} from '../../core/models/job.model';
 import {TradeColors} from '../../core/constants/colors';
 import {animate, animateChild, query, stagger, style, transition, trigger} from '@angular/animations';
 import {FloorUserData} from '../../core/models/floor-user-data.model';
+import moment from 'moment';
 
 @Component({
   selector: 'app-floor',
@@ -26,7 +27,8 @@ export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: FloorUserData;
   zone: string;
   pipeline: Job[];
-  // private now = moment.utc();
+  private now = moment.utc().add(10, 'week').add(4, 'day');
+  text = 'Default Text';
 
   constructor() { }
 
@@ -40,6 +42,7 @@ export class FloorComponent implements OnInit, OnChanges {
         this.zone = Object.keys(newFloor.data)[0];
       }
       this.pipeline = newFloor.data[this.zone].pipeline;
+      this.setText();
 
     } else {
       this.pipeline = [];
@@ -59,4 +62,18 @@ export class FloorComponent implements OnInit, OnChanges {
     this.zone = `zone_${event}`;
     this.pipeline = this.floor.data[this.zone].pipeline;
   }
+
+  setText(): void {
+    const start = moment.utc(this.pipeline[0].start);
+    const end = moment.utc(this.pipeline[this.pipeline.length - 1].end);
+
+    if (this.now.isBefore(start)) {
+      this.text = 'Construction has not started';
+    } else if ( this.now.isAfter(end)) {
+      this.text = 'Construction is completed';
+    } else {
+      this.text = 'Construction is currently ongoing';
+    }
+  }
+
 }

@@ -1,11 +1,17 @@
-<div
-  matRipple
-  class="stack-pill"
-  [ngStyle]="{backgroundColor: color}">
-  <div>
-    <strong>
-      {{job.trade}}
-    </strong>
+<div class="pill-container">
+  <div
+    matRipple
+    class="stack-pill"
+    [ngStyle]="{backgroundColor: color}">
+    <div>
+      <strong>
+        {{job.trade}}
+      </strong>
+    </div>
+    <div *ngIf="job.start" class="secondary-text">{{formatTime(job.start)}}</div>
   </div>
-  <div *ngIf="job.start" class="secondary-text">{{formatTime(job.start)}}</div>
+  <div *ngIf="now.isBetween(start, end)"
+       class="marker"
+       [style.border-left-width.px]="lineWidth"
+       [style.left]="progress()"></div>
 </div>

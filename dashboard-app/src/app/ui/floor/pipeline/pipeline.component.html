@@ -3,10 +3,11 @@
     matRipple
     class="stack-pill"
     [ngStyle]="{backgroundColor: color}">
-    <div>
+    <div class="d-flex d-justify-content-center">
       <strong>
         {{job.trade}}
       </strong>
+      <mat-icon>{{getIcon()}}</mat-icon>
     </div>
     <div *ngIf="job.start" class="secondary-text">{{formatTime(job.start)}}</div>
   </div>

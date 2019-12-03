@@ -36,4 +36,14 @@ export class PipelineComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustStyle(`calc(${percentage}% - ${offset}px)`);
   }
 
+  getIcon(): string {
+    let icon = '';
+    if (this.job.done && this.now.isAfter(this.end)) {
+      icon = 'check_circle_outline';
+    } else if (this.now.isAfter(this.end)) {
+      icon = 'error_outline';
+    }
+    return icon;
+  }
+
 }

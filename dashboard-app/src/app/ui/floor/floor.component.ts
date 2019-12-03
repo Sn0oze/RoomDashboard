@@ -4,6 +4,7 @@ import {TradeColors} from '../../core/constants/colors';
 import {animate, animateChild, query, stagger, style, transition, trigger} from '@angular/animations';
 import {FloorUserData} from '../../core/models/floor-user-data.model';
 import moment from 'moment';
+import {Zone} from '../../core/models/zone.model';
 
 @Component({
   selector: 'app-floor',
@@ -27,8 +28,9 @@ export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: FloorUserData;
   zone: string;
   pipeline: Job[];
-  private now = moment.utc().add(10, 'week').add(4, 'day');
+  now = moment.utc().add(10, 'week').add(4, 'day');
   text = 'Default Text';
+  colors = [TradeColors.NONE, TradeColors.NONE];
 
   constructor() { }
 
@@ -43,10 +45,19 @@ export class FloorComponent implements OnInit, OnChanges {
       }
       this.pipeline = newFloor.data[this.zone].pipeline;
       this.setText();
-
-    } else {
-      this.pipeline = [];
-      this.zone = '';
+      this.colors = [];
+      Object.values(newFloor.data).forEach((zone: Zone, index) => {
+        const result = zone.pipeline.find((job: Job) => {
+          const start = moment.utc(job.start);
+          const end = moment.utc(job.end);
+          return this.now.isBetween(start, end);
+        });
+        if (result) {
+          this.colors[index] = TradeColors[result.trade];
+        } else {
+          this.colors[index] = TradeColors.NONE;
+        }
+      });
     }
   }
 

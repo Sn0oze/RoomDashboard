@@ -1,16 +1,19 @@
-import {Component, ElementRef, OnInit, ViewChild, Output, EventEmitter, Input} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import * as d3 from 'd3';
+import {TradeColors} from '../../../core/constants/colors';
 
 @Component({
   selector: 'app-floor-plan',
   templateUrl: './floor-plan.component.html',
   styleUrls: ['./floor-plan.component.scss']
 })
-export class FloorPlanComponent implements OnInit {
+export class FloorPlanComponent implements OnInit, OnChanges {
   @Input() floor: any;
+  @Input() colors: TradeColors[];
   @Output() floorSelected = new EventEmitter<string>();
   @ViewChild('svgContainer', {static: true})
-    private chartContainer: ElementRef;
+  private chartContainer: ElementRef;
+  private defaultOpacity = 0.4;
 
   constructor() { }
 
@@ -55,8 +58,8 @@ export class FloorPlanComponent implements OnInit {
       .attr('width', (d) => xscale(d.width))
       .attr('height', (d) => yscale(d.height))
       .attr('class', 'zone')
-      .style('fill', (d) => d.data.id === '0' ? '#313131' : '#cccccc')
-      .style('opacity', 0.67);
+      .style('fill', (d, i) => this.colors[i])
+      .style('opacity', self.defaultOpacity);
 
     svg.selectAll('text')
       .data(data)
@@ -69,10 +72,20 @@ export class FloorPlanComponent implements OnInit {
 
     const rooms = d3.selectAll('.zone');
     rooms.on('click',  function(d: Room) {
-      d3.selectAll('rect').style('fill', '#cccccc');
-      d3.select(this).style('fill', '#313131');
+      d3.selectAll('rect').style('opacity', self.defaultOpacity);
+      d3.select(this).style('opacity', 0.8);
       self.floorSelected.emit(d.data.id);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const newColors = changes.colors.currentValue;
+    const element = this.chartContainer.nativeElement;
+
+    const svg = d3.select(element).select('svg');
+
+    svg.selectAll('rect')
+      .style('fill', (d, i) => newColors[i]);
   }
 
   twoZoneLayout(max: number, divisions: number): Room[] {

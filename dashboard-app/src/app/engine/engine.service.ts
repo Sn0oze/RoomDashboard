@@ -4,9 +4,9 @@ import {Colors} from '../core/constants/colors';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 import {BehaviorSubject} from 'rxjs';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
-import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
-import {OutlinePass} from 'three/examples/jsm/postprocessing/OutlinePass';
+// import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
+// import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+// import {OutlinePass} from 'three/examples/jsm/postprocessing/OutlinePass';
 import {SceneService} from './scene.service';
 
 
@@ -90,6 +90,12 @@ export class EngineService implements OnDestroy {
     this.plane.rotation.x = - Math.PI / 2;
     // this.plane.receiveShadow = true;
     this.scene.add(this.plane);
+
+    const loader = new THREE.FontLoader();
+    loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',  ( font ) => {
+      const labels = this.sceneService.setLabels(this.constructionSite, font);
+      this.scene.add(labels);
+    });
 
 
     // controls
@@ -180,7 +186,6 @@ export class EngineService implements OnDestroy {
         }
         this.INTERSECTED = intersects[ 0 ].object;
         this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
-        console.log(this.INTERSECTED, this.constructionSite);
         this.INTERSECTED.material.color.setHex( Colors.active );
         // this.outlinePass.selectedObjects = [this.INTERSECTED];
         const floorData = this.INTERSECTED.userData as FloorUserData;

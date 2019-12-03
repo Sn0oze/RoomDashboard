@@ -3,7 +3,10 @@ import * as THREE from 'three';
 import {Colors} from '../core/constants/colors';
 import buildingData from '../../data/buildingDataV2.json';
 import {FloorUserData} from '../core/models/floor-user-data.model';
+// import fontD from '../../fonts/Roboto_Regular.json';
 
+
+/*
 interface Building {
   coords: {
     x: number;
@@ -11,8 +14,10 @@ interface Building {
     z: number;
     rotation: number;
   };
-  data: any;
+  data: Object;
 }
+
+ */
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +26,7 @@ export class SceneService {
 
   constructor() { }
 
+  // scene generation
   buildScene(): THREE.Group {
     const site = new THREE.Group();
 
@@ -33,10 +39,11 @@ export class SceneService {
       buildingModel.rotateY(coords.rotation);
       site.add(buildingModel);
     }));
+
     return site;
   }
 
-  private addFloor(color = 0x000000): THREE.Mesh {
+  addFloor(color = 0x000000): THREE.Mesh {
     const dimensions = {width: 7, height: 1, depth: 14};
     const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
     const material = new THREE.MeshLambertMaterial({color: color});
@@ -48,7 +55,7 @@ export class SceneService {
     return new THREE.Mesh(geometry, material);
   }
 
-  private createBuilding(floors, buildingName = 'None'): THREE.Group {
+  createBuilding(floors, buildingName = 'None'): THREE.Group {
     const building = new THREE.Group();
     Object.entries(floors).forEach(([floorName, zones], index) => {
       const color = index % 2 === 0 ? 0x252a3d : Colors.default;
@@ -62,5 +69,38 @@ export class SceneService {
       building.add(floor);
     });
     return building;
+  }
+
+  // adding labels
+
+  setLabels(scene: THREE.Group, font: THREE.Font): THREE.Group {
+    const labels = new THREE.Group();
+
+    Object.values(scene.children).forEach((building) => {
+      const floors = Object.values(building.children);
+      const top = floors[floors.length - 1];
+      const data = top.userData as FloorUserData;
+
+      const textGeo = new THREE.TextGeometry( data.building, {font: font, size: 1, height: .1, });
+      const textMaterial = new THREE.MeshPhongMaterial( { color: 0x313131 } );
+      const label = new THREE.Mesh( textGeo, textMaterial );
+      label.translateY(8);
+      const center = this.getCenterPoint(top);
+      label.position.x = center.x;
+      label.position.z = center.z;
+      label.position.y = center.y + 3;
+      label.geometry.center();
+      // console.log(top, center);
+      labels.add(label);
+    });
+    return labels;
+  }
+  getCenterPoint(mesh) {
+    const geometry = mesh.geometry;
+    geometry.computeBoundingBox();
+    const center = new THREE.Vector3();
+    geometry.boundingBox.getCenter(center);
+    mesh.localToWorld( center );
+    return center;
   }
 }

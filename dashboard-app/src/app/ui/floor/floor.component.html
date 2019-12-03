@@ -2,10 +2,14 @@
   <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
   <ng-template #floorSelected>
     <div>
-      <h2>Building {{floor.building}}</h2>
-      <p>Floor {{floorNumber()}}</p>
-      <app-floor-plan [floor]="floor" (floorSelected)="floorChanges($event)"></app-floor-plan>
-      <p>{{text}}</p>
+      <h2>Building <span>{{floor.building}}</span></h2>
+      <h3>Floor <span>{{floorNumber()}}</span></h3>
+      <app-floor-plan
+        [floor]="floor"
+        [colors]="colors"
+        (floorSelected)="floorChanges($event)"></app-floor-plan>
+      <div>{{text}}</div>
+      <p>Pipeline for <span>{{zone.replace('_', ' ')}}</span></p>
       <div>
         <app-horizontal-list>
           <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline">

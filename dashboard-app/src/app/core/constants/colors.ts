@@ -12,5 +12,6 @@ export enum TradeColors {
   PL = '#ffd800',
   EL = '#6fb98f',
   CA = '#eb8242',
-  PA = '#c2b0c9'
+  PA = '#c2b0c9',
+  NONE = '#313131'
 }

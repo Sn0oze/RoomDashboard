@@ -14,10 +14,10 @@ export class PipelineComponent implements OnInit {
 
   @Input() job: Job;
   @Input() color = '#64C7CC';
-  private now = moment.utc('2020-02-16T09:43:11Z');
-  private lineWidth = 4;
-  private start: Moment;
-  private end: Moment;
+  now = moment.utc('2020-02-16T09:43:11Z');
+  lineWidth = 4;
+  start: Moment;
+  end: Moment;
 
   constructor(private sanitizer: DomSanitizer) { }
 

@@ -28,7 +28,7 @@ export class FloorComponent implements OnInit, OnChanges {
   @Input() floor: FloorUserData;
   zone: string;
   pipeline: Job[];
-  now = moment.utc('2020-02-16T09:17:19Z')
+  now = moment.utc('2020-02-16T09:43:11Z');
   text = 'Default Text';
   colors = [TradeColors.NONE, TradeColors.NONE];
 

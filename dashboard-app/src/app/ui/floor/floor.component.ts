@@ -72,6 +72,7 @@ export class FloorComponent implements OnInit, OnChanges {
   floorChanges(event): void {
     this.zone = `zone_${event}`;
     this.pipeline = this.floor.data[this.zone].pipeline;
+    this.setText();
   }
 
   setText(): void {

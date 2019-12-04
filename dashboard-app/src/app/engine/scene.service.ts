@@ -65,7 +65,7 @@ export class SceneService {
         building: buildingName,
         data: zones
       } as FloorUserData;
-      floor.translateY(1 + (index));
+      floor.translateY(1 + (index * 2));
       building.add(floor);
     });
     return building;

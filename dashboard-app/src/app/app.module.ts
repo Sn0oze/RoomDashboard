@@ -6,9 +6,9 @@ import { UiComponent } from './ui/ui.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {
-  MatSelectModule,
-  MatRippleModule,
-  MatListModule
+    MatSelectModule,
+    MatRippleModule,
+    MatListModule, MatIconModule
 } from '@angular/material';
 import { PipelineComponent } from './ui/floor/pipeline/pipeline.component';
 import { HorizontalListComponent } from './core/components/horizontal-list/horizontal-list.component';
@@ -36,14 +36,15 @@ import { FloorPlanComponent } from './ui/floor/floor-plan/floor-plan.component';
     FloorComponent,
     FloorPlanComponent
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FlexLayoutModule,
-    MatSelectModule,
-    MatRippleModule,
-    MatListModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        FlexLayoutModule,
+        MatSelectModule,
+        MatRippleModule,
+        MatListModule,
+        MatIconModule
+    ],
   providers: [
   ],
   bootstrap: [

@@ -1,22 +1,25 @@
-<ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
-<ng-template #floorSelected>
-  <div>
-    <app-floor-plan></app-floor-plan>
-    <mat-form-field>
-      <mat-label>Select a Room</mat-label>
-      <mat-select [(value)]="room">
-        <mat-option *ngFor="let room of rooms" [value]="room">{{room}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<div class="px-4 pt-5">
+  <ng-container *ngIf="floor then floorSelected else noFloor"></ng-container>
+  <ng-template #floorSelected>
     <div>
-      <app-vertical-list>
-        <app-stack-item *ngFor="let job of jobs(); let i = index">
-          <app-pipeline [color]="getPipelineColor(job.deadline, i)" [job]="job"></app-pipeline>
-        </app-stack-item>
-      </app-vertical-list>
+      <h2>Building <span>{{floor.building}}</span></h2>
+      <h3>Floor <span>{{floorNumber()}}</span></h3>
+      <app-floor-plan
+        [floor]="floor"
+        [colors]="colors"
+        (floorSelected)="floorChanges($event)"></app-floor-plan>
+      <div>{{text}}</div>
+      <p>Pipeline for <span>{{zone.replace('_', ' ')}}</span></p>
+      <div>
+        <app-horizontal-list>
+          <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline">
+            <app-pipeline [color]="color(job)" [job]="job"></app-pipeline>
+          </app-stack-item>
+        </app-horizontal-list>
+      </div>
     </div>
-  </div>
-</ng-template>
-<ng-template #noFloor>
-  <p>Click a floor to see more</p>
-</ng-template>
+  </ng-template>
+  <ng-template #noFloor>
+    <p>Click a floor to see more</p>
+  </ng-template>
+</div>

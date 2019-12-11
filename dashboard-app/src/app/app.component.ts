@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import buildingData from '../data/buildingData.json';
-import { Colors } from './core/constants/colors';
+import {FloorUserData} from './core/models/floor-user-data.model';
 
 
 @Component({
@@ -14,9 +13,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onFloorSelected(floor): void {
-    if (floor) {
-      this.floor = buildingData[floor];
+  onFloorSelected(floorData: FloorUserData): void {
+    if (floorData) {
+      this.floor = floorData;
     } else {
       this.floor = null;
     }

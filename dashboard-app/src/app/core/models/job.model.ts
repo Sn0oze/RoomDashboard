@@ -1,4 +1,6 @@
 export interface Job {
-  tradesmen: string;
-  deadline: string;
+  done: boolean;
+  end: string;
+  start: string;
+  trade: string;
 }

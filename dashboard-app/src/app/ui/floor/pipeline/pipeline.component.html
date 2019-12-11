@@ -1,11 +1,18 @@
-<div
-  matRipple
-  class="stack-pill"
-  [ngStyle]="{backgroundColor: color}">
-  <div>
-    <strong>
-      {{job.tradesmen}}
-    </strong>
+<div class="pill-container">
+  <div
+    matRipple
+    class="stack-pill"
+    [ngStyle]="{backgroundColor: color}">
+    <div class="d-flex d-justify-content-center">
+      <strong>
+        {{job.trade}}
+      </strong>
+      <mat-icon>{{getIcon()}}</mat-icon>
+    </div>
+    <div *ngIf="job.start" class="secondary-text">{{formatTime(job.start)}}</div>
   </div>
-  <div *ngIf="job.deadline" class="secondary-text">{{formatTime(job.deadline)}}</div>
+  <div *ngIf="now.isBetween(start, end)"
+       class="marker"
+       [style.border-left-width.px]="lineWidth"
+       [style.left]="progress()"></div>
 </div>

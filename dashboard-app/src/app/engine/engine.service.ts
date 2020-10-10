@@ -100,6 +100,18 @@ export class EngineService implements OnDestroy {
     this.controls.minDistance = initialCameraDistance;
     this.controls.maxDistance = 100;
     this.controls.maxPolarAngle = Math.PI / 2;
+
+    const position = new THREE.Vector3();
+    this.constructionSite.children.forEach(building => {
+      building.children.forEach((mesh: THREE.Mesh) => {
+        const edges = new THREE.EdgesGeometry(mesh.geometry);
+        const contour = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+        mesh.getWorldPosition(position);
+        contour.setRotationFromQuaternion(building.quaternion);
+        contour.position.set(position.x, position.y, position.z);
+        this.scene.add(contour);
+      });
+    });
   }
 
   animate(): void {

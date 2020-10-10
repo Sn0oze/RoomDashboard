@@ -4,9 +4,6 @@ import {Colors} from '../core/constants/colors';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 import {BehaviorSubject} from 'rxjs';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-// import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
-// import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
-// import {OutlinePass} from 'three/examples/jsm/postprocessing/OutlinePass';
 import {SceneService} from './scene.service';
 
 
@@ -24,16 +21,12 @@ export class EngineService implements OnDestroy {
 
   private frameId: number = null;
   private mouse: THREE.Vector2;
-  private raycaster: THREE.Raycaster;
+  private rayCaster: THREE.Raycaster;
   private INTERSECTED = null;
 
   private constructionSite: THREE.Group;
-  private plane: THREE.Mesh;
 
   floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
-  // private composer: EffectComposer;
-  // private outlinePass: OutlinePass;
-  // private renderPass: RenderPass;
 
   public constructor(private ngZone: NgZone, private sceneService: SceneService) {
   }
@@ -67,7 +60,7 @@ export class EngineService implements OnDestroy {
     this.camera.position.set( -16, 20, 24);
     this.scene.add(this.camera);
 
-    this.light = new THREE.PointLight(0xf9ffb5, 1);
+    this.light = new THREE.PointLight(0xffffff, 1);
     this.light.position.set(25, 25, 0);
     // this.light.castShadow = true;
     this.scene.add(this.light);
@@ -75,21 +68,22 @@ export class EngineService implements OnDestroy {
 
 
     this.mouse = new THREE.Vector2();
-    this.raycaster = new THREE.Raycaster();
+    this.rayCaster = new THREE.Raycaster();
 
     // Center scene to construction site
     this.constructionSite = this.sceneService.buildScene();
     new THREE.Box3().setFromObject( this.constructionSite ).getCenter( this.constructionSite.position ).multiplyScalar( - 1 );
     this.scene.add(this.constructionSite);
 
-    // Ground plane
-    const planeGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 1 );
-    const planeMaterial = new THREE.MeshBasicMaterial( {color: 0xdddddd, side: THREE.DoubleSide} );
-    this.plane = new THREE.Mesh( planeGeometry, planeMaterial );
-    this.plane.position.y =  this.constructionSite.position.y;
-    this.plane.rotation.x = - Math.PI / 2;
-    // this.plane.receiveShadow = true;
-    this.scene.add(this.plane);
+    const boundingBox = new THREE.Box3().setFromObject(this.constructionSite);
+    const size = new THREE.Vector3();
+    boundingBox.getSize(size);
+    const gridSize = size.z * 1.5;
+    const gridDivisions = 10;
+
+    const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
+    gridHelper.position.y = this.constructionSite.position.y;
+    this.scene.add( gridHelper );
 
     const loader = new THREE.FontLoader();
     loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',  ( font ) => {
@@ -106,18 +100,6 @@ export class EngineService implements OnDestroy {
     this.controls.minDistance = initialCameraDistance;
     this.controls.maxDistance = 100;
     this.controls.maxPolarAngle = Math.PI / 2;
-
-    /*
-    this.composer = new EffectComposer( this.renderer );
-    this.renderPass = new RenderPass( this.scene, this.camera );
-    this.composer.addPass( this.renderPass );
-    this.outlinePass = new OutlinePass( new THREE.Vector2( this.container.offsetWidth, window.innerHeight ), this.scene, this.camera );
-    this.outlinePass.edgeStrength = 3;
-    this.outlinePass.edgeThickness = 1;
-    this.outlinePass.visibleEdgeColor.set('#000000');
-    this.outlinePass.hiddenEdgeColor.set('#190a05');
-    this.composer.addPass( this.outlinePass );
-     */
   }
 
   animate(): void {
@@ -161,7 +143,6 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
-    // this.composer.setSize( width, height );
   }
 
   getIntersection(event): THREE.Intersection[] {
@@ -169,8 +150,8 @@ export class EngineService implements OnDestroy {
     this.mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
     this.mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
 
-    this.raycaster.setFromCamera( this.mouse, this.camera );
-    return this.raycaster.intersectObjects( this.constructionSite.children, true );
+    this.rayCaster.setFromCamera( this.mouse, this.camera );
+    return this.rayCaster.intersectObjects( this.constructionSite.children, true );
   }
 
   getSelection(event): void {

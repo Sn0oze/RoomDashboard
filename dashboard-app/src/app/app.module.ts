@@ -5,19 +5,15 @@ import { EngineComponent } from './engine/engine.component';
 import { UiComponent } from './ui/ui.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {
-    MatSelectModule,
-    MatRippleModule,
-    MatListModule, MatIconModule
-} from '@angular/material';
 import { PipelineComponent } from './ui/floor/pipeline/pipeline.component';
 import { HorizontalListComponent } from './core/components/horizontal-list/horizontal-list.component';
-import { VerticalListComponent } from './core/components/vertical-list/vertical-list.component';
-import { VerticalListItemComponent } from './core/components/vertical-list/vertical-list-item/vertical-list-item.component';
-import { StackItemComponent } from './core/components/vertical-list/stack-item/stack-item.component';
 import { UiWidgetComponent } from './ui/ui-widget/ui-widget.component';
 import { FloorComponent } from './ui/floor/floor.component';
 import { FloorPlanComponent } from './ui/floor/floor-plan/floor-plan.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatRippleModule} from '@angular/material/core';
+import {MatListModule} from '@angular/material/list';
+import {MatIconModule} from '@angular/material/icon';
 
 
 
@@ -29,9 +25,6 @@ import { FloorPlanComponent } from './ui/floor/floor-plan/floor-plan.component';
     UiComponent,
     PipelineComponent,
     HorizontalListComponent,
-    VerticalListComponent,
-    VerticalListItemComponent,
-    StackItemComponent,
     UiWidgetComponent,
     FloorComponent,
     FloorPlanComponent

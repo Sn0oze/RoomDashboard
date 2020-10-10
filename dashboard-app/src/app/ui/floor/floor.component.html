@@ -12,9 +12,9 @@
       <p>Pipeline for <span>{{zone.replace('_', ' ')}}</span></p>
       <div>
         <app-horizontal-list>
-          <app-stack-item style="min-width: 120px" *ngFor="let job of pipeline">
+          <div style="min-width: 120px" *ngFor="let job of pipeline">
             <app-pipeline [color]="color(job)" [job]="job"></app-pipeline>
-          </app-stack-item>
+          </div>
         </app-horizontal-list>
       </div>
     </div>

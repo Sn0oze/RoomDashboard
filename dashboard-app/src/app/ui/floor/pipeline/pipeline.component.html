@@ -1,13 +1,13 @@
 <div class="pill-container">
   <div
     matRipple
-    class="stack-pill"
+    class="pill"
     [ngStyle]="{backgroundColor: color}">
     <div class="d-flex d-justify-content-center">
       <strong>
         {{job.trade}}
       </strong>
-      <mat-icon>{{getIcon()}}</mat-icon>
+      <mat-icon class="ml-2">{{getIcon()}}</mat-icon>
     </div>
     <div *ngIf="job.start" class="secondary-text">{{formatTime(job.start)}}</div>
   </div>

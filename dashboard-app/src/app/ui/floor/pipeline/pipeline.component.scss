@@ -1,6 +1,10 @@
 @import "variables";
 
-.stack-pill {
+:host{
+  display: block;
+}
+
+.pill {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -25,10 +29,6 @@
     border-left-style: dotted;
     pointer-events: none;
   }
-}
-
-mat-icon{
-  padding-left: .5rem;
 }
 
 

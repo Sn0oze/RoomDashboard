@@ -81,8 +81,8 @@ export class SceneService {
       const top = floors[floors.length - 1];
       const data = top.userData as FloorUserData;
 
-      const textGeo = new THREE.TextGeometry( data.building, {font: font, size: 1, height: .1, });
-      const textMaterial = new THREE.MeshPhongMaterial( { color: 0x313131 } );
+      const textGeo = new THREE.TextGeometry( data.building, {font: font, size: 2, height: .1, });
+      const textMaterial = new THREE.MeshBasicMaterial( { color: 0x313131 } );
       const label = new THREE.Mesh( textGeo, textMaterial );
       label.translateY(8);
       const center = this.getCenterPoint(top);

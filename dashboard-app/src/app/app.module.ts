@@ -4,7 +4,6 @@ import { AppComponent } from './app.component';
 import { EngineComponent } from './engine/engine.component';
 import { UiComponent } from './ui/ui.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { PipelineComponent } from './ui/floor/pipeline/pipeline.component';
 import { HorizontalListComponent } from './core/components/horizontal-list/horizontal-list.component';
 import { UiWidgetComponent } from './ui/ui-widget/ui-widget.component';
@@ -35,7 +34,6 @@ import { MatSliderModule } from '@angular/material/slider';
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        FlexLayoutModule,
         MatSelectModule,
         MatRippleModule,
         MatListModule,

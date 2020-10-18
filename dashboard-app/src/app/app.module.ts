@@ -32,13 +32,13 @@ import { MatSliderModule } from '@angular/material/slider';
     FontLegibilityPipe
   ],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatSelectModule,
-        MatRippleModule,
-        MatListModule,
-        MatIconModule,
-        MatSliderModule
+      BrowserModule,
+      BrowserAnimationsModule,
+      MatSelectModule,
+      MatRippleModule,
+      MatListModule,
+      MatIconModule,
+      MatSliderModule
     ],
   providers: [
   ],

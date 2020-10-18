@@ -4,7 +4,9 @@ export enum Colors {
   hover = 0x3c9d9b,
   red = 0xf66767,
   green = 0xB2DDA5,
-  passive = 0xcccccc
+  passive = 0xcccccc,
+  orange = 0xff9800,
+  dark = 0x252a3d
 }
 
 export enum TradeColors {

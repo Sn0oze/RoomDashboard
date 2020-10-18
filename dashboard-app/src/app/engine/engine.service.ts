@@ -17,15 +17,13 @@ export class EngineService implements OnDestroy {
   private scene: THREE.Scene;
   private light: THREE.PointLight;
   private controls: OrbitControls;
-
   private frameId: number = null;
 
   private constructionSite: THREE.Group;
 
   floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
 
-  public constructor(private ngZone: NgZone, private sceneService: Scene2Service) {
-  }
+  public constructor(private ngZone: NgZone, private sceneService: Scene2Service) {}
 
   public ngOnDestroy() {
     if (this.frameId != null) {
@@ -33,7 +31,11 @@ export class EngineService implements OnDestroy {
     }
   }
 
-  createScene(canvas: ElementRef<HTMLCanvasElement>, container: ElementRef<HTMLDivElement>): void {
+  createScene(
+    canvas: ElementRef<HTMLCanvasElement>,
+    container: ElementRef<HTMLDivElement>,
+    withContours = false
+  ): void {
     // The first step is to get the reference of the canvas element from our HTML document
     const initialCameraDistance = 35;
     const cameraPosition = [-16, 20, 24];
@@ -93,19 +95,21 @@ export class EngineService implements OnDestroy {
     // this.controls.maxPolarAngle = Math.PI / 2;
 
     // draw contours
-    /*const position = new THREE.Vector3();
-    this.constructionSite.children.forEach(building => {
-      building.children.forEach((level: THREE.Group) => {
-        level.children.forEach((volume: THREE.Mesh) => {
-          const edges = new THREE.EdgesGeometry(volume.geometry);
-          const contour = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( {color: 0x000000}));
-          volume.getWorldPosition(position);
-          contour.setRotationFromQuaternion(building.quaternion);
-          contour.position.set(position.x, position.y, position.z);
-          this.scene.add(contour);
+    if (withContours) {
+      const position = new THREE.Vector3();
+      this.constructionSite.children.forEach(building => {
+        building.children.forEach((level: THREE.Group) => {
+          level.children.forEach((volume: THREE.Mesh) => {
+            const edges = new THREE.EdgesGeometry(volume.geometry);
+            const contour = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( {color: 0x000000}));
+            volume.getWorldPosition(position);
+            contour.setRotationFromQuaternion(building.quaternion);
+            contour.position.set(position.x, position.y, position.z);
+            this.scene.add(contour);
+          });
         });
       });
-    });*/
+    }
   }
 
   animate(): void {

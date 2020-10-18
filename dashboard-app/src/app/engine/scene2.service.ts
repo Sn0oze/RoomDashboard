@@ -7,12 +7,15 @@ import {Colors} from '../core/constants/colors';
 })
 export class Scene2Service {
   private site =  new THREE.Group();
-  private levels = Array.from({length: 5}, (v, i) => i);
+  private levels: number[];
   public get buildingLevels(): number[] {
     return this.levels;
   }
 
-  constructor() { }
+  constructor() {
+    const levelCount = this.getStorageValue('levelCount', 5);
+    this.levels = Array.from({length: levelCount}, (v, i) => i);
+  }
 
   buildScene(): THREE.Group {
     const buildingModel = this.loadBuilding();
@@ -23,7 +26,9 @@ export class Scene2Service {
 
   addLevel(levelNumber: number): THREE.Group {
     const level = new THREE.Group();
-    this.constructGridLevel(level, levelNumber);
+    const n = this.getStorageValue('n', 2);
+    const m = this.getStorageValue('m', 3);
+    this.constructGridLevel(level, levelNumber, n, m);
     return level;
   }
 
@@ -51,9 +56,9 @@ export class Scene2Service {
     level.name = `level-${levelNumber}`;
     for (let col = 1; col <= n; col++) {
       for (let row = 1; row <= m; row++) {
-        const rowColor = row % 2 ? 0x252a3d : Colors.default;
-        const colColor = col % 2 ? rowColor : row % 2 ? Colors.default : 0x252a3d;
-        const color = levelNumber % 2 ? (colColor === Colors.default ? 0x252a3d : Colors.default) : colColor;
+        const rowColor = row % 2 ? Colors.orange : Colors.default;
+        const colColor = col % 2 ? rowColor : row % 2 ? Colors.default : Colors.orange;
+        const color = levelNumber % 2 ? (colColor === Colors.default ? Colors.orange : Colors.default) : colColor;
         const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth );
         const material = new THREE.MeshLambertMaterial({color: color});
         const volume = new THREE.Mesh(geometry, material);
@@ -63,5 +68,8 @@ export class Scene2Service {
         level.add(volume);
       }
     }
+  }
+  getStorageValue(key: string, fallback: number): number {
+    return  parseInt(localStorage.getItem(key), 10) || fallback;
   }
 }

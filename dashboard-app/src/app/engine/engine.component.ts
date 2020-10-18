@@ -16,16 +16,12 @@ export class EngineComponent implements OnInit, OnDestroy {
 
   @Output() floorSelected = new EventEmitter<FloorUserData>();
 
-  constructor(
-    private engine: EngineService) { }
+  constructor(private engine: EngineService) { }
 
   ngOnInit() {
-    this.engine.createScene(this.rendererCanvas, this.container);
+    const withContour = localStorage.getItem('contour') === 'true';
+    this.engine.createScene(this.rendererCanvas, this.container, withContour);
     this.engine.animate();
-    this.engine.floorClicked.subscribe(
-      floor => {
-         this.floorSelected.emit(floor);
-      });
   }
 
   ngOnDestroy(): void {

@@ -1,57 +1,66 @@
 /*****************************************************
  * node_modules imports
  *****************************************************/
- @import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
 
- /*****************************************************
-  * project imports
-  *****************************************************/
- @import 'variables';
- @import 'mixins';
+/*****************************************************
+ * project imports
+ *****************************************************/
+@import 'variables';
+@import 'mixins';
 
- /*****************************************************
-  * styles
-  *****************************************************/
- html, body, app-root {
-   overflow: auto;
-   width   : 100%;
-   height  : 100%;
-   margin  : 0;
-   padding : 0;
- }
+/*****************************************************
+ * Material Theming
+ *****************************************************/
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
 
- body {
-   background-color: $mainBgColor;
-   color: $mainTextColor;
- }
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
 
- .engine-wrapper{
-   position: absolute;
-   top: 0;
-   right: 0;
-   bottom: 0;
-   left: 0;
-   z-index: 0;
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$app-primary: mat-palette($mat-orange);
+$app-accent: mat-palette($mat-light-blue, A200, A100, A400);
 
-   #renderCanvas {
+// The warn palette is optional (defaults to red).
+$app-warn: mat-palette($mat-red);
 
-   }
+// Create the theme object (a Sass map containing all of the palettes).
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
-   #renderCanvas:focus {
-     outline: none;
-   }
- }
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($app-theme);
 
- .secondary-text{
-   font-size: .75rem;
-   opacity: 0.66;
- }
+/*****************************************************
+ * styles
+ *****************************************************/
+html, body, app-root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-.zone{
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.secondary-text {
+  font-size: .75rem;
+  opacity: 0.66;
+}
+
+.zone {
   cursor: pointer;
 }
 
-.zone-label{
+.zone-label {
   fill: black;
   font-size: 22px;
   text-anchor: middle;
@@ -61,21 +70,20 @@
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
-  text-shadow:
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white,
-    0 0 2px white;
+  text-shadow: 0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white,
+  0 0 2px white;
 }
 
 
-.floor-container{
+.floor-container {
   background-color: white;
   /*
   @include media-breakpoint-down(md) {
@@ -102,7 +110,7 @@
 
 .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing.cdk-focused .mat-slider-thumb-label,
 .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
-  background-color: #3f51b5;
+  background-color: mat-color($app-primary);
 }
 
 .expand {
@@ -110,5 +118,16 @@
   height: 100%;
 }
 
-canvas { outline: none; border: none; }
+canvas {
+  outline: none;
+  border: none;
+}
+
+.bg-theme-primary{
+  background-color: mat-color($app-primary);
+}
+
+.bg-theme-accent{
+  background-color: mat-color($app-accent);
+}
 

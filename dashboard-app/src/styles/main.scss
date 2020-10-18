@@ -113,6 +113,12 @@ body {
   background-color: mat-color($app-primary);
 }
 
+.mat-slider {
+  .mat-slider-thumb-container {
+    transition: none;
+  }
+}
+
 .expand {
   width: 100%;
   height: 100%;

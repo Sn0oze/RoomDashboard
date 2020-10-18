@@ -15,7 +15,7 @@ import {MatRippleModule} from '@angular/material/core';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
 import { FontLegibilityPipe } from './core/pipes/font-legibility.pipe';
-import {MatSliderModule} from '@angular/material';
+import { MatSliderModule } from '@angular/material/slider';
 
 
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FloorUserData} from './core/models/floor-user-data.model';
+import {MatSliderChange} from '@angular/material';
+import {Scene2Service} from './engine/scene2.service';
 
 
 @Component({
@@ -8,16 +9,22 @@ import {FloorUserData} from './core/models/floor-user-data.model';
   styleUrls: []
 })
 export class AppComponent implements OnInit {
-  floor = null;
+  levels: number[];
+  minLevel: number;
+  maxLevel: number;
+  selectedLevel: number;
+
+  constructor(private scene: Scene2Service) {
+    this.levels = this.scene.buildingLevels;
+    this.minLevel = this.levels[0];
+    this.maxLevel = this.levels[this.levels.length - 1];
+    this.selectedLevel = this.maxLevel;
+  }
 
   ngOnInit(): void {
   }
 
-  onFloorSelected(floorData: FloorUserData): void {
-    if (floorData) {
-      this.floor = floorData;
-    } else {
-      this.floor = null;
-    }
+  changeLevel(event: MatSliderChange) {
+    this.scene.setLevelCut(this.levels.indexOf(event.value));
   }
 }

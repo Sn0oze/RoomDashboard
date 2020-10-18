@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import {ElementRef, Injectable, NgZone, OnDestroy} from '@angular/core';
-import {Colors} from '../core/constants/colors';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 import {BehaviorSubject} from 'rxjs';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import {SceneService} from './scene.service';
+import {Scene2Service} from './scene2.service';
 
 
 @Injectable({
@@ -20,15 +19,12 @@ export class EngineService implements OnDestroy {
   private controls: OrbitControls;
 
   private frameId: number = null;
-  private mouse: THREE.Vector2;
-  private rayCaster: THREE.Raycaster;
-  private INTERSECTED = null;
 
   private constructionSite: THREE.Group;
 
   floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
 
-  public constructor(private ngZone: NgZone, private sceneService: SceneService) {
+  public constructor(private ngZone: NgZone, private sceneService: Scene2Service) {
   }
 
   public ngOnDestroy() {
@@ -40,35 +36,36 @@ export class EngineService implements OnDestroy {
   createScene(canvas: ElementRef<HTMLCanvasElement>, container: ElementRef<HTMLDivElement>): void {
     // The first step is to get the reference of the canvas element from our HTML document
     const initialCameraDistance = 35;
+    const cameraPosition = [-16, 20, 24];
     this.canvas = canvas.nativeElement;
     this.container = container.nativeElement;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
+      powerPreference: 'high-performance',
       alpha: true,    // transparent background
       antialias: true // smooth edges
     });
     this.renderer.setSize(this.container.offsetWidth, window.innerHeight);
-    this.renderer.shadowMap.enabled = true;
 
     // create the scene
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
-      75, this.container.offsetWidth / window.innerHeight, 0.1, 1000
+      75, this.container.offsetWidth / window.innerHeight, 1, 3000
     );
-    this.camera.position.set( -16, 20, 24);
+    this.camera.position.set(-50, 50, 50);
     this.scene.add(this.camera);
+    // const cameraHelper = new THREE.CameraHelper(this.camera);
+    // this.scene.add(cameraHelper);
 
     this.light = new THREE.PointLight(0xffffff, 1);
-    this.light.position.set(25, 25, 0);
-    // this.light.castShadow = true;
+    this.light.position.set(-25, 25, 15);
     this.scene.add(this.light);
     this.scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-
-    this.mouse = new THREE.Vector2();
-    this.rayCaster = new THREE.Raycaster();
+    /*const pointLightHelper = new THREE.PointLightHelper(this.light, 5, 0x000000);
+    this.scene.add(pointLightHelper);*/
 
     // Center scene to construction site
     this.constructionSite = this.sceneService.buildScene();
@@ -76,42 +73,39 @@ export class EngineService implements OnDestroy {
     this.scene.add(this.constructionSite);
 
     const boundingBox = new THREE.Box3().setFromObject(this.constructionSite);
-    const size = new THREE.Vector3();
-    boundingBox.getSize(size);
-    const gridSize = size.z * 1.5;
+    const sceneDimensions = new THREE.Vector3();
+    boundingBox.getSize(sceneDimensions);
+    const gridSize = sceneDimensions.z * 5;
     const gridDivisions = 10;
 
-    const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
-    gridHelper.position.y = this.constructionSite.position.y;
-    this.scene.add( gridHelper );
-
-    const loader = new THREE.FontLoader();
-    loader.load( 'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',  ( font ) => {
-      const labels = this.sceneService.setLabels(this.constructionSite, font);
-      this.scene.add(labels);
-    });
-
+    const grid = new THREE.GridHelper(gridSize, gridDivisions);
+    grid.position.y = this.constructionSite.position.y;
+    this.scene.add(grid);
 
     // controls
     this.controls = new OrbitControls( this.camera, this.renderer.domElement );
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.1;
     this.controls.screenSpacePanning = false;
+    this.controls.enablePan = false;
     this.controls.minDistance = initialCameraDistance;
-    this.controls.maxDistance = 100;
-    this.controls.maxPolarAngle = Math.PI / 2;
+    this.controls.maxDistance = 1200;
+    // this.controls.maxPolarAngle = Math.PI / 2;
 
-    const position = new THREE.Vector3();
+    // draw contours
+    /*const position = new THREE.Vector3();
     this.constructionSite.children.forEach(building => {
-      building.children.forEach((mesh: THREE.Mesh) => {
-        const edges = new THREE.EdgesGeometry(mesh.geometry);
-        const contour = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
-        mesh.getWorldPosition(position);
-        contour.setRotationFromQuaternion(building.quaternion);
-        contour.position.set(position.x, position.y, position.z);
-        this.scene.add(contour);
+      building.children.forEach((level: THREE.Group) => {
+        level.children.forEach((volume: THREE.Mesh) => {
+          const edges = new THREE.EdgesGeometry(volume.geometry);
+          const contour = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( {color: 0x000000}));
+          volume.getWorldPosition(position);
+          contour.setRotationFromQuaternion(building.quaternion);
+          contour.position.set(position.x, position.y, position.z);
+          this.scene.add(contour);
+        });
       });
-    });
+    });*/
   }
 
   animate(): void {
@@ -121,29 +115,18 @@ export class EngineService implements OnDestroy {
       window.addEventListener('DOMContentLoaded', () => {
         this.render();
       });
-
       window.addEventListener('resize', () => {
         this.resize();
-      });
-      window.addEventListener('mousedown', (event) => {
-        if (event.target === this.canvas) {
-          this.getSelection(event);
-        }
-      });
-      window.addEventListener('touchstart', (event) => {
-        const element = event.targetTouches[0];
-        if (element.target === this.canvas) {
-          this.getSelection(element);
-        }
       });
     });
   }
 
   render(): void {
-    this.frameId = requestAnimationFrame(() => {
-      this.render();
-    });
+    this.frameId = requestAnimationFrame(() => this.render());
+    this.updateFrame();
+  }
 
+  updateFrame(): void {
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -155,45 +138,5 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
-  }
-
-  getIntersection(event): THREE.Intersection[] {
-    const canvasBounds = this.renderer.getContext().canvas.getBoundingClientRect();
-    this.mouse.x = ( ( event.clientX - canvasBounds.left ) / ( canvasBounds.right - canvasBounds.left ) ) * 2 - 1;
-    this.mouse.y = - ( ( event.clientY - canvasBounds.top ) / ( canvasBounds.bottom - canvasBounds.top) ) * 2 + 1;
-
-    this.rayCaster.setFromCamera( this.mouse, this.camera );
-    return this.rayCaster.intersectObjects( this.constructionSite.children, true );
-  }
-
-  getSelection(event): void {
-    const intersects = this.getIntersection(event);
-    if (intersects.length) {
-      // Cast to any required because the the type of the intersect objects is forced to object3D
-      // which does not have an material and color property.
-      // const block = intersects[0] as any;
-      // block.object.material.color.setHex(Colors.active);
-      if ( this.INTERSECTED !== intersects[ 0 ].object) {
-        if ( this.INTERSECTED ) {
-          this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
-        }
-        this.INTERSECTED = intersects[ 0 ].object;
-        this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
-        this.INTERSECTED.material.color.setHex( Colors.active );
-        // this.outlinePass.selectedObjects = [this.INTERSECTED];
-        const floorData = this.INTERSECTED.userData as FloorUserData;
-        this.floorClicked.next(floorData);
-      }
-    } else {
-      if ( this.INTERSECTED) {
-        /*
-        this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
-        this.outlinePass.selectedObjects = [];
-        this.floorClicked.next(null);
-         */
-
-      }
-      // this.INTERSECTED = null;
-    }
   }
 }

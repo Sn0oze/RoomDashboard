@@ -44,14 +44,10 @@ export class SceneService {
   }
 
   addFloor(color = 0x000000): THREE.Mesh {
-    const dimensions = {width: 7, height: 1, depth: 14};
+    const dimensions = {width: 7, height: 2, depth: 14};
     const geometry = new THREE.BoxBufferGeometry(dimensions.width, dimensions.height, dimensions.depth);
+    // const material = new THREE.MeshStandardMaterial({color: color, metalness: 0, roughness: 1});
     const material = new THREE.MeshLambertMaterial({color: color});
-    // const wireframe_material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
-    // const floor = new THREE.Mesh(geometry, material);
-    // floor.castShadow = true;
-    // floor.receiveShadow = true;
-    // return floor;
     return new THREE.Mesh(geometry, material);
   }
 
@@ -81,7 +77,7 @@ export class SceneService {
       const top = floors[floors.length - 1];
       const data = top.userData as FloorUserData;
 
-      const textGeo = new THREE.TextGeometry( data.building, {font: font, size: 2, height: .1, });
+      const textGeo = new THREE.TextBufferGeometry( data.building, {font: font, size: 2, height: .1, });
       const textMaterial = new THREE.MeshBasicMaterial( { color: 0x313131 } );
       const label = new THREE.Mesh( textGeo, textMaterial );
       label.translateY(8);

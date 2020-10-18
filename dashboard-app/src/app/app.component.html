@@ -1,10 +1,34 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6 p-0 floor-container">
-      <app-floor [floor]="floor"></app-floor>
+<!--      <app-floor [floor]="floor"></app-floor>-->
+      <div class="d-flex flex-column" style="height: 50%">
+        <h3 class="mx-4 my-2">Selected level: {{selectedLevel}}</h3>
+        <div class="bg-info d-flex align-items-center justify-content-center m-4" style="flex: 1 1 auto">
+          <p>Graph 1</p>
+        </div>
+      </div>
+      <div class="d-flex flex-column" style="height: 50%">
+        <h3 class="mx-4 my-2">Some Title</h3>
+        <div class="bg-info d-flex align-items-center justify-content-center m-4" style="flex: 1 1 auto">
+          <p>Graph 2</p>
+        </div>
+      </div>
     </div>
-    <div class="col-md-6 p-0">
-      <app-engine (floorSelected)="onFloorSelected($event)"></app-engine>
+    <div class="col-md-6 p-0 position-relative">
+      <app-engine></app-engine>
+      <div class="position-absolute d-flex align-items-center" style="top: 0; left: 1rem; height: 100%">
+        <mat-slider
+          style="height: 70%"
+          (input)="changeLevel($event)"
+          [min]="minLevel"
+          [max]="maxLevel"
+          [(value)]="selectedLevel"
+          thumbLabel="true"
+          vertical="true"
+          step="1"
+          color="primary"></mat-slider>
+      </div>
     </div>
   </div>
 </div>

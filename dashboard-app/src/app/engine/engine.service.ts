@@ -19,7 +19,7 @@ export class EngineService implements OnDestroy {
   private controls: OrbitControls;
   private frameId: number = null;
 
-  private constructionSite: THREE.Group;
+  private model: THREE.Group;
 
   floorClicked: BehaviorSubject<FloorUserData> = new BehaviorSubject(null);
 
@@ -38,7 +38,6 @@ export class EngineService implements OnDestroy {
   ): void {
     // The first step is to get the reference of the canvas element from our HTML document
     const initialCameraDistance = 35;
-    const cameraPosition = [-16, 20, 24];
     this.canvas = canvas.nativeElement;
     this.container = container.nativeElement;
 
@@ -54,7 +53,7 @@ export class EngineService implements OnDestroy {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(
-      75, this.container.offsetWidth / window.innerHeight, 1, 3000
+      75, this.container.offsetWidth / window.innerHeight, 1, 2000
     );
     this.camera.position.set(-50, 50, 50);
     this.scene.add(this.camera);
@@ -70,18 +69,19 @@ export class EngineService implements OnDestroy {
     this.scene.add(pointLightHelper);*/
 
     // Center scene to construction site
-    this.constructionSite = this.sceneService.buildScene();
-    new THREE.Box3().setFromObject( this.constructionSite ).getCenter( this.constructionSite.position ).multiplyScalar( - 1 );
-    this.scene.add(this.constructionSite);
+    this.model = this.sceneService.buildScene();
+    new THREE.Box3().setFromObject( this.model ).getCenter( this.model.position ).multiplyScalar( - 1 );
+    this.scene.add(this.model);
+    console.log(this.model);
 
-    const boundingBox = new THREE.Box3().setFromObject(this.constructionSite);
+    const boundingBox = new THREE.Box3().setFromObject(this.model);
     const sceneDimensions = new THREE.Vector3();
     boundingBox.getSize(sceneDimensions);
     const gridSize = sceneDimensions.z * 5;
     const gridDivisions = 10;
 
     const grid = new THREE.GridHelper(gridSize, gridDivisions);
-    grid.position.y = this.constructionSite.position.y;
+    grid.position.y = boundingBox.min.y + .001;
     this.scene.add(grid);
 
     // controls
@@ -91,13 +91,13 @@ export class EngineService implements OnDestroy {
     this.controls.screenSpacePanning = false;
     this.controls.enablePan = false;
     this.controls.minDistance = initialCameraDistance;
-    this.controls.maxDistance = 1200;
+    this.controls.maxDistance = 1000;
     // this.controls.maxPolarAngle = Math.PI / 2;
 
     // draw contours
     if (withContours) {
       const position = new THREE.Vector3();
-      this.constructionSite.children.forEach(building => {
+      this.model.children.forEach(building => {
         building.children.forEach((level: THREE.Group) => {
           level.children.forEach((volume: THREE.Mesh) => {
             const edges = new THREE.EdgesGeometry(volume.geometry);

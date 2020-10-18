@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import {Colors} from '../core/constants/colors';
-import buildingData from '../../data/buildingDataV2.json';
 import {FloorUserData} from '../core/models/floor-user-data.model';
 // import fontD from '../../fonts/Roboto_Regular.json';
 
@@ -30,7 +29,7 @@ export class SceneService {
   buildScene(): THREE.Group {
     const site = new THREE.Group();
 
-    Object.entries(buildingData).forEach((([buildingName, building]) => {
+    Object.entries([]).forEach((([buildingName, building]: [string, any]) => {
       const floors = building.data;
       const coords = building.coords;
 

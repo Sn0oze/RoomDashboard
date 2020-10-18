@@ -13,7 +13,7 @@
   * styles
   *****************************************************/
  html, body, app-root {
-   overflow: hidden;
+   overflow: auto;
    width   : 100%;
    height  : 100%;
    margin  : 0;
@@ -104,4 +104,11 @@
 .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
   background-color: #3f51b5;
 }
+
+.expand {
+  width: 100%;
+  height: 100%;
+}
+
+canvas { outline: none; border: none; }
 

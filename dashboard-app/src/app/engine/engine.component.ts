@@ -4,7 +4,8 @@ import {FloorUserData} from '../core/models/floor-user-data.model';
 
 @Component({
   selector: 'app-engine',
-  templateUrl: './engine.component.html'
+  templateUrl: './engine.component.html',
+  styleUrls: ['./engine.component.scss']
 })
 export class EngineComponent implements OnInit, OnDestroy {
 

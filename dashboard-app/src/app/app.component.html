@@ -18,7 +18,10 @@
     </div>
     <div class="col-md-6 p-0 position-relative" style="height: 100%">
       <app-engine></app-engine>
-      <div class="position-absolute d-flex align-items-center" style="top: 0; left: 1rem; height: 100%">
+      <div
+        class="position-absolute d-flex flex-column align-items-center justify-content-center"
+        style="top: 0; left: 1rem; height: 100%">
+        <span>Level</span>
         <mat-slider
           style="height: 70%"
           (input)="changeLevel($event)"

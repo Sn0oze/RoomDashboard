@@ -3,8 +3,11 @@
     <div class="col-md-6 p-0 floor-container">
 <!--      <app-floor [floor]="floor"></app-floor>-->
       <div class="d-flex flex-column" style="height: 50%">
-        <h3 class="mx-4 my-2">Selected level: {{selectedLevel}}</h3>
-        <div class="mx-4">Settings key: contour, leveCount, n , m</div>
+        <div class="mx-4">
+          <h3 class="my-2">Selected level: {{selectedLevel}}</h3>
+          <div class="mb-1">Query params:</div>
+          <div><strong>contour</strong>: boolean, <strong>levels</strong>: number , <strong>n</strong>: number, <strong>m</strong>: number</div>
+        </div>
         <div class="bg-theme-primary d-flex align-items-center justify-content-center m-4" style="flex: 1 1 auto">
           <h1 class="text-white">Graph 1</h1>
         </div>

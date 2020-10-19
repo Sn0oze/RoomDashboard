@@ -72,7 +72,6 @@ export class EngineService implements OnDestroy {
     this.model = this.sceneService.buildScene();
     new THREE.Box3().setFromObject( this.model ).getCenter( this.model.position ).multiplyScalar( - 1 );
     this.scene.add(this.model);
-    console.log(this.model);
 
     const boundingBox = new THREE.Box3().setFromObject(this.model);
     const sceneDimensions = new THREE.Vector3();
@@ -142,5 +141,20 @@ export class EngineService implements OnDestroy {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
+  }
+
+  clean() {
+    const meshes = [];
+    this.scene.traverse(( object: any ) => {
+      if ( object.isMesh ) {
+        meshes.push( object );
+      }
+    });
+    for (let i = 0; i < meshes.length; i++) {
+      const mesh = meshes[ i ];
+      mesh.material.dispose();
+      mesh.geometry.dispose();
+      this.scene.remove( mesh );
+    }
   }
 }

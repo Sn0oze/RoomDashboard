@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import * as THREE from 'three';
 import {Colors} from '../core/constants/colors';
+import {QueryUtils} from '../utils';
+import {SCENE} from '../constants';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +15,20 @@ export class Scene2Service {
   }
 
   constructor() {
-    const levelCount = this.getStorageValue('levelCount', 5);
+    const levelCount = this.getConfigValue('levels', SCENE.LEVELS);
     this.levels = Array.from({length: levelCount}, (v, i) => i);
   }
 
   buildScene(): THREE.Group {
     const buildingModel = this.loadBuilding();
-    // const coords = buildingModel.coords;
     this.site.add(buildingModel);
     return this.site;
   }
 
   addLevel(levelNumber: number): THREE.Group {
     const level = new THREE.Group();
-    const n = this.getStorageValue('n', 2);
-    const m = this.getStorageValue('m', 3);
+    const n = this.getConfigValue('n', SCENE.N);
+    const m = this.getConfigValue('m', SCENE.M);
     this.constructGridLevel(level, levelNumber, n, m);
     return level;
   }
@@ -69,7 +70,7 @@ export class Scene2Service {
       }
     }
   }
-  getStorageValue(key: string, fallback: number): number {
-    return  parseInt(localStorage.getItem(key), 10) || fallback;
+  getConfigValue(key: string, fallback: number): number {
+    return parseInt(QueryUtils.getParams().get(key), 10) || fallback;
   }
 }

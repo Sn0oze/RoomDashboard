@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, OnDestroy, ViewChild, Output, EventEmitter} from '@angular/core';
 import { EngineService } from './engine.service';
 import {FloorUserData} from '../core/models/floor-user-data.model';
+import {QueryUtils} from '../utils';
 
 @Component({
   selector: 'app-engine',
@@ -19,7 +20,7 @@ export class EngineComponent implements OnInit, OnDestroy {
   constructor(private engine: EngineService) { }
 
   ngOnInit() {
-    const withContour = localStorage.getItem('contour') === 'true';
+    const withContour = QueryUtils.getParams().get('contour') === 'true';
     this.engine.createScene(this.rendererCanvas, this.container, withContour);
     this.engine.animate();
   }

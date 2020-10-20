@@ -33,10 +33,45 @@ export class Scene2Service {
     return level;
   }
 
+  addLevelFromShape(levelNumber: number): THREE.Group {
+    const level = new THREE.Group();
+    this.constructShape(level, levelNumber);
+    return level;
+  }
+
+  constructShape(
+    level: THREE.Group,
+    levelNumber: number,
+  ): void {
+    level.name = `level-${levelNumber}`;
+    const color = levelNumber % 2 ? Colors.orange : Colors.default;
+
+    const points = [];
+    points.push( new THREE.Vector2( 0, 0 ));
+    points.push( new THREE.Vector2( 0, 18 ));
+    points.push( new THREE.Vector2( 12, 18 ));
+    points.push( new THREE.Vector2( 18, 11 ));
+    points.push( new THREE.Vector2( 10, 3 ));
+    points.push( new THREE.Vector2( 7, 6 ));
+    points.push( new THREE.Vector2( 12, 11 ));
+    points.push( new THREE.Vector2( 9, 14 ));
+    points.push( new THREE.Vector2( 4, 14 ));
+    points.push( new THREE.Vector2( 4, 0 ));
+    points.push( new THREE.Vector2( 0, 0 ));
+
+    const geometry = new THREE.ExtrudeBufferGeometry( new THREE.Shape( points ), {depth: 2, bevelEnabled: false} );
+    const material = new THREE.MeshLambertMaterial({color: color});
+    const volume = new THREE.Mesh(geometry, material);
+    volume.position.y = levelNumber * 2;
+    volume.rotation.x = Math.PI / 2;
+    level.add(volume);
+  }
+
   loadBuilding(): THREE.Group {
     const building = new THREE.Group();
     this.levels.forEach((levelId, index) => {
-      const level = this.addLevel(index);
+      // const level = this.addLevel(index);
+      const level = this.addLevelFromShape(index);
       building.add(level);
     });
     return building;
@@ -70,6 +105,7 @@ export class Scene2Service {
       }
     }
   }
+
   getConfigValue(key: string, fallback: number): number {
     return parseInt(QueryUtils.getParams().get(key), 10) || fallback;
   }

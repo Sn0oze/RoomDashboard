@@ -65,8 +65,8 @@ export class EngineService implements OnDestroy {
     this.scene.add(this.light);
     this.scene.add(new THREE.AmbientLight(0xffffff, 1));
 
-    /*const pointLightHelper = new THREE.PointLightHelper(this.light, 5, 0x000000);
-    this.scene.add(pointLightHelper);*/
+    // const pointLightHelper = new THREE.PointLightHelper(this.light, 5, 0x000000);
+    // this.scene.add(pointLightHelper);
 
     // Center scene to construction site
     this.model = this.sceneService.buildScene();
@@ -104,6 +104,7 @@ export class EngineService implements OnDestroy {
             volume.getWorldPosition(position);
             contour.setRotationFromQuaternion(building.quaternion);
             contour.position.set(position.x, position.y, position.z);
+            contour.rotation.setFromQuaternion(volume.quaternion);
             this.scene.add(contour);
           });
         });

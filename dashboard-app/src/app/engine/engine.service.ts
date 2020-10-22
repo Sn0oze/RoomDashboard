@@ -34,7 +34,8 @@ export class EngineService implements OnDestroy {
   createScene(
     canvas: ElementRef<HTMLCanvasElement>,
     container: ElementRef<HTMLDivElement>,
-    withContours = false
+    withContours = false,
+    debug = false
   ): void {
     // The first step is to get the reference of the canvas element from our HTML document
     const initialCameraDistance = 35;
@@ -64,9 +65,6 @@ export class EngineService implements OnDestroy {
     this.light.position.set(-25, 25, 15);
     this.scene.add(this.light);
     this.scene.add(new THREE.AmbientLight(0xffffff, 1));
-
-    // const pointLightHelper = new THREE.PointLightHelper(this.light, 5, 0x000000);
-    // this.scene.add(pointLightHelper);
 
     // Center scene to construction site
     this.model = this.sceneService.buildScene();
@@ -109,6 +107,14 @@ export class EngineService implements OnDestroy {
           });
         });
       });
+    }
+
+    if (debug) {
+      const pointLightHelper = new THREE.PointLightHelper(this.light, 5, 0x000000);
+      this.scene.add(pointLightHelper);
+
+      const axesHelper = new THREE.AxesHelper( 40 );
+      this.scene.add( axesHelper );
     }
   }
 

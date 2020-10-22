@@ -21,7 +21,8 @@ export class EngineComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const withContour = QueryUtils.getParams().get('contour') === 'true';
-    this.engine.createScene(this.rendererCanvas, this.container, withContour);
+    const debug = QueryUtils.getParams().get('debug') === 'true';
+    this.engine.createScene(this.rendererCanvas, this.container, withContour, debug);
     this.engine.animate();
   }
 

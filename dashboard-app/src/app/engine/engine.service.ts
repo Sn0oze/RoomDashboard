@@ -103,6 +103,8 @@ export class EngineService implements OnDestroy {
             contour.setRotationFromQuaternion(building.quaternion);
             contour.position.set(position.x, position.y, position.z);
             contour.rotation.setFromQuaternion(volume.quaternion);
+           /* contour.material.transparent = true;
+            contour.material.opacity = .2;*/
             this.scene.add(contour);
           });
         });

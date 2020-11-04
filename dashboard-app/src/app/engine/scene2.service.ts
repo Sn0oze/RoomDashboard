@@ -15,7 +15,8 @@ export class Scene2Service {
   }
 
   constructor() {
-    const levelCount = this.getConfigValue('levels', SCENE.LEVELS);
+    // const levelCount = this.getConfigValue('levels', SCENE.LEVELS);
+    const levelCount = coords.length;
     this.levels = Array.from({length: levelCount}, (v, i) => i);
   }
 
@@ -44,27 +45,17 @@ export class Scene2Service {
     levelNumber: number,
   ): void {
     level.name = `level-${levelNumber}`;
-    const color = levelNumber % 2 ? Colors.orange : Colors.default;
-
-    const points = [];
-    points.push( new THREE.Vector2( 0, 0 ));
-    points.push( new THREE.Vector2( 0, 18 ));
-    points.push( new THREE.Vector2( 12, 18 ));
-    points.push( new THREE.Vector2( 18, 11 ));
-    points.push( new THREE.Vector2( 10, 3 ));
-    points.push( new THREE.Vector2( 7, 6 ));
-    points.push( new THREE.Vector2( 12, 11 ));
-    points.push( new THREE.Vector2( 9, 14 ));
-    points.push( new THREE.Vector2( 4, 14 ));
-    points.push( new THREE.Vector2( 4, 0 ));
-    points.push( new THREE.Vector2( 0, 0 ));
-
-    const geometry = new THREE.ExtrudeBufferGeometry( new THREE.Shape( points ), {depth: 2, bevelEnabled: false} );
-    const material = new THREE.MeshLambertMaterial({color: color});
-    const volume = new THREE.Mesh(geometry, material);
-    volume.position.y = levelNumber * 2;
-    volume.rotation.x = Math.PI / 2;
-    level.add(volume);
+    const color = 0xdddddd; // levelNumber % 2 ? Colors.orange : Colors.default;
+    coords[levelNumber].volumes.forEach(volumeCoords => {
+      const height = 3;
+      const points = volumeCoords.map(([x, y]) => new THREE.Vector2( x / 10, y / 10 ));
+      const geometry = new THREE.ExtrudeBufferGeometry(new THREE.Shape(points), {depth: height, bevelEnabled: false});
+      const material = new THREE.MeshLambertMaterial({color: color});
+      const volume = new THREE.Mesh(geometry, material);
+      volume.position.y = levelNumber * height;
+      volume.rotation.x = Math.PI / 2;
+      level.add(volume);
+    });
   }
 
   loadBuilding(): THREE.Group {
@@ -110,3 +101,84 @@ export class Scene2Service {
     return parseInt(QueryUtils.getParams().get(key), 10) || fallback;
   }
 }
+
+export const coords = [
+  {
+    id: 1,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [50, 340], [560, 200], [705, 420], [750, 520], [440, 750], [200, 560],
+        [270, 470], [440, 610], [615, 485], [510, 330], [80, 450], [50, 340]
+      ],
+    ]
+  },
+  {
+    id: 2,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [50, 340], [560, 200], [705, 420], [750, 520], [440, 750], [200, 560],
+        [270, 470], [440, 610], [615, 485], [510, 330], [80, 450], [50, 340]
+      ],
+    ]
+  },
+  {
+    id: 3,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [50, 340], [560, 200], [705, 420], [750, 520], [440, 750], [200, 560],
+        [270, 470], [440, 610], [615, 485], [510, 330], [80, 450], [50, 340]
+      ],
+    ]
+  },
+  {
+    id: 4,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [321.8, 265.385], [560, 200], [643.539, 326.750], [546.452, 383.811],
+        [500, 315], [432.5, 335], [425, 321.5], [345, 335], [321.8, 265.385]
+      ],
+      [
+        [374.650, 698.264], [440, 610], [615, 485], [709.782, 430.626],
+        [750, 520], [440, 750], [374.650, 698.264]
+      ]
+    ]
+  },
+  {
+    id: 5,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [321.8, 265.385], [560, 200], [643.539, 326.750], [546.452, 383.811],
+        [500, 315], [432.5, 335], [425, 321.5], [345, 335], [321.8, 265.385]
+      ],
+      [
+        [455.994, 598.576], [615, 485], [709.782, 430.626],
+        [750, 520], [521.349, 689.644], [455.994, 598.576]
+      ]
+    ]
+  },
+  {
+    id: 6,
+    elevation: 2,
+    height: 3,
+    volumes: [
+      [
+        [321.8, 265.385], [560, 200], [643.539, 326.750], [546.452, 383.811],
+        [500, 315], [432.5, 335], [425, 321.5], [345, 335], [321.8, 265.385]
+      ],
+      [
+        [519.436, 553.262], [615, 485], [709.782, 430.626],
+        [750, 520], [584.299, 642.939], [519.436, 553.262]
+      ]
+    ]
+  }
+];
